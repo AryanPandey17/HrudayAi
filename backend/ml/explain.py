@@ -85,7 +85,8 @@ def _plain(value: Any) -> str | int | float:
 def _display_value(feature: FeatureSpec, value: Any) -> str:
     if feature.kind != "numeric":
         return next(option.label for option in feature.options if option.value == value)
-    return f"{value:.4g} {feature.unit}" if feature.unit else f"{value:.4g}"
+    number = f"{float(f'{value:.4g}'):,.10g}"  # 4 significant digits, no exponent
+    return f"{number} {feature.unit}" if feature.unit else number
 
 
 class TargetExplainer:
