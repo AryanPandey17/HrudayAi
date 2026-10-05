@@ -2,6 +2,8 @@
 
 import os
 
+APP_NAME = "HrudayAI"
+
 DEFAULT_CORS_ORIGINS = "http://localhost:3000,http://127.0.0.1:3000"
 CORS_ORIGINS = [o.strip() for o in os.getenv("CORS_ORIGINS", DEFAULT_CORS_ORIGINS).split(",")]
 

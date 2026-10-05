@@ -18,15 +18,17 @@ def _field_name(feature_name: str) -> str:
 
 def _field(feature: FeatureSpec) -> tuple[Any, Any]:
     if feature.kind == "numeric":
-        bounds = Field(alias=feature.name, ge=feature.minimum, le=feature.maximum)
-        return float, bounds
-    return Literal[feature.values], Field(alias=feature.name)
+        bounds = Field(None, alias=feature.name, ge=feature.minimum, le=feature.maximum)
+        return float | None, bounds
+    return Literal[feature.values] | None, Field(None, alias=feature.name)
 
 
 def build_patient_model(schema: FeatureSchema) -> type[BaseModel]:
-    """Pydantic model with one required, range/option-checked field per non-derived feature.
+    """Pydantic model with one optional, range/option-checked field per non-derived feature.
 
-    Unknown keys are rejected, so angiography columns (LAD, LCX, RCA, Cath) cannot be sent.
+    Fields are optional because the test ladder accepts partial input; which fields a stage
+    needs is checked separately. Unknown keys are rejected, so angiography columns (LAD, LCX,
+    RCA, Cath) cannot be sent.
     """
     fields = {_field_name(f.name): _field(f) for f in schema.features if not f.derived}
     return create_model("PatientFeatures", __config__=ConfigDict(extra="forbid"), **fields)
@@ -50,6 +52,7 @@ class FeatureOut(BaseModel):
     description: str | None
     derived: bool
     default: Scalar
+    stage: int = Field(description="First ladder stage at which this feature is used")
 
 
 class GroupOut(BaseModel):
@@ -81,10 +84,37 @@ class SchemaResponse(BaseModel):
     disclaimer: str
 
 
+class Interval(BaseModel):
+    """Percentile interval of the probability over bootstrap refits of the stage model."""
+
+    low: float
+    high: float
+    lower_percentile: int
+    upper_percentile: int
+    n_bootstrap: int
+
+
+class StageInfo(BaseModel):
+    id: int
+    key: str
+    label: str
+
+
+class StageMetrics(BaseModel):
+    """Saved validation results of the stage model that produced a prediction."""
+
+    cv_roc_auc: dict[str, float]
+    cv_f1: dict[str, float]
+    cv_brier: dict[str, float]
+    test_roc_auc: float
+    test_roc_auc_ci95: list[float]
+
+
 class TargetPrediction(BaseModel):
     """Calibrated prediction and SHAP explanation for one target."""
 
     probability: float
+    interval: Interval
     positive: bool
     label: str
     threshold: float
@@ -94,12 +124,37 @@ class TargetPrediction(BaseModel):
     contributions: list[Contribution]
     top_positive: list[Contribution]
     top_negative: list[Contribution]
+    stage_metrics: StageMetrics
 
 
 class PredictResponse(BaseModel):
+    stage: StageInfo
+    stage_selection: Literal["requested", "highest_complete"]
+    ignored_features: list[str] = Field(
+        description="Provided inputs that belong to a later, incomplete stage and were not used"
+    )
+    missing_for_next_stage: list[str] = Field(
+        description="Inputs still needed to reach the next stage; empty at the last stage"
+    )
     predictions: dict[str, TargetPrediction]
-    features: dict[str, Scalar] = Field(description="Model inputs, including derived features")
+    features: dict[str, Scalar] = Field(description="Model inputs used, including derived features")
     disclaimer: str
+
+
+class LadderStage(BaseModel):
+    id: int
+    key: str
+    label: str
+    groups: list[str]
+    added_features: list[str] = Field(description="Inputs first required at this stage")
+    required_features: list[str] = Field(description="All inputs required at this stage")
+    n_model_features: int
+
+
+class LadderResponse(BaseModel):
+    stages: list[LadderStage]
+    meta: dict[str, Any]
+    metrics: dict[str, Any] = Field(description="reports/ladder_metrics.json, per target and stage")
 
 
 class ExamplePatient(BaseModel):

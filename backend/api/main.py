@@ -10,8 +10,8 @@ from fastapi.responses import JSONResponse
 from pydantic import ValidationError
 
 from api import schemas
-from api.service import EXAMPLE_SOURCE, PredictionService
-from api.settings import CORS_ORIGINS, DEFAULT_TOP_N, MAX_TOP_N
+from api.service import EXAMPLE_SOURCE, PredictionService, StageInputError, UnknownStageError
+from api.settings import APP_NAME, CORS_ORIGINS, DEFAULT_TOP_N, MAX_TOP_N
 
 
 @asynccontextmanager
@@ -22,7 +22,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="CardioVis API",
+    title=f"{APP_NAME} API",
     description="CAD and LAD / LCX / RCA stenosis probabilities with SHAP explanations. "
     "Decision support / educational use only.",
     version="0.1.0",
@@ -49,11 +49,13 @@ def _field_errors(errors: list[dict[str, Any]]) -> list[schemas.FieldError]:
     return formatted
 
 
-def _validation_response(errors: list[dict[str, Any]]) -> JSONResponse:
-    body = schemas.ValidationErrorResponse(
-        detail="Invalid patient features", errors=_field_errors(errors)
-    )
+def _error_response(detail: str, errors: list[schemas.FieldError]) -> JSONResponse:
+    body = schemas.ValidationErrorResponse(detail=detail, errors=errors)
     return JSONResponse(status_code=422, content=body.model_dump())
+
+
+def _validation_response(errors: list[dict[str, Any]]) -> JSONResponse:
+    return _error_response("Invalid patient features", _field_errors(errors))
 
 
 @app.exception_handler(RequestValidationError)
@@ -80,15 +82,34 @@ def feature_schema(request: Request) -> schemas.SchemaResponse:
 def predict(
     request: Request,
     features: Annotated[dict[str, Any], Body(description="Feature name -> value; see /schema")],
+    stage: Annotated[
+        int | None, Query(description="Ladder stage; default: highest complete")
+    ] = None,
     top_n: Annotated[int, Query(ge=1, le=MAX_TOP_N)] = DEFAULT_TOP_N,
 ) -> schemas.PredictResponse:
-    """Calibrated probabilities and SHAP contributions for CAD, LAD, LCX and RCA."""
+    """Calibrated probabilities, bootstrap intervals and SHAP contributions at one ladder stage.
+
+    Input may be partial. Without ``stage`` the highest stage whose inputs are all present is
+    used; inputs belonging to a later, incomplete stage are ignored and listed in the response.
+    """
     service = _service(request)
     try:
         patient = service.patient_model.model_validate(features)
+        return service.predict(patient.model_dump(by_alias=True), stage, top_n)
     except ValidationError as error:
         return _validation_response(error.errors())
-    return service.predict(patient.model_dump(by_alias=True), top_n)
+    except UnknownStageError as error:
+        return _error_response(str(error), [schemas.FieldError(field="stage", message=str(error))])
+    except StageInputError as error:
+        message = f"Required for stage {error.stage.id} ({error.stage.label})"
+        missing = [schemas.FieldError(field=name, message=message) for name in error.missing]
+        return _error_response(str(error), missing)
+
+
+@app.get("/ladder")
+def ladder(request: Request) -> schemas.LadderResponse:
+    """Test-ladder stages, the inputs each one needs, and the saved per-stage metrics."""
+    return _service(request).ladder_response()
 
 
 @app.get("/metrics")
