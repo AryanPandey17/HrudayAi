@@ -6,6 +6,12 @@
     {"id": "lab", "label": "Laboratory"},
     {"id": "echo", "label": "Echocardiography"}
   ],
+  "stages": [
+    {"id": 1, "key": "history_exam", "label": "History + examination", "groups": ["demographics", "exam"]},
+    {"id": 2, "key": "ecg", "label": "ECG", "groups": ["ecg"]},
+    {"id": 3, "key": "labs", "label": "Laboratory", "groups": ["lab"]},
+    {"id": 4, "key": "echo", "label": "Echocardiography", "groups": ["echo"]}
+  ],
   "option_sets": {
     "no_yes_int": [{"value": 0, "label": "No"}, {"value": 1, "label": "Yes"}],
     "no_yes_str": [{"value": "N", "label": "No"}, {"value": "Y", "label": "Yes"}]

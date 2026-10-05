@@ -5,11 +5,9 @@
 Everything is seeded by ``ml.config.SEED``.
 """
 
-import json
 import platform
 from dataclasses import dataclass
 from importlib.metadata import version
-from pathlib import Path
 from typing import Any
 
 import joblib
@@ -37,14 +35,9 @@ from ml.cv import (
     repeated_folds,
 )
 from ml.data import feature_columns, load_raw, target_series
-from ml.evaluate import (
-    bootstrap_auc_interval,
-    classification_metrics,
-    confusion_counts,
-    summarize_folds,
-)
 from ml.feature_checks import feature_checks
 from ml.models import MODEL_LABELS
+from ml.reporting import summarize_variants, test_report, write_json
 from ml.schema import load_schema
 from ml.selection import select_calibration, select_model
 
@@ -71,31 +64,6 @@ def _pool(folds: list[FoldPredictions], variant: str) -> plots.Labelled:
     return y_true, np.concatenate([fold.proba[variant] for fold in folds])
 
 
-def _summarize_variants(folds: list[FoldPredictions]) -> dict[str, dict[str, dict[str, float]]]:
-    """Per-variant mean/std over folds, each fold scored at that variant's own threshold."""
-    return {
-        variant: summarize_folds(
-            [
-                classification_metrics(fold.y_true, fold.proba[variant], fold.thresholds[variant])
-                for fold in folds
-            ]
-        )
-        for variant in folds[0].proba
-    }
-
-
-def _test_report(y_true: np.ndarray, proba: np.ndarray, threshold: float) -> dict[str, Any]:
-    low, high = bootstrap_auc_interval(y_true, proba, SEED)
-    return {
-        "n": len(y_true),
-        "n_positive": int(y_true.sum()),
-        "roc_auc_ci95": [low, high],
-        "at_selected_threshold": classification_metrics(y_true, proba, threshold),
-        "at_threshold_0.5": classification_metrics(y_true, proba, 0.5),
-        "confusion_at_selected_threshold": confusion_counts(y_true, proba, threshold),
-    }
-
-
 def train_target(
     target: str, X: pd.DataFrame, y: pd.Series, train: np.ndarray, test: np.ndarray
 ) -> TargetResult:
@@ -120,9 +88,9 @@ def train_target(
     report = {
         "description": TARGETS[target].description,
         "prevalence": {"train": float(y_train.mean()), "test": float(y_test.mean())},
-        "candidates_cv": _summarize_variants(candidate_folds),
+        "candidates_cv": summarize_variants(candidate_folds),
         "selection": selection,
-        "calibration_cv": _summarize_variants(calibration_folds),
+        "calibration_cv": summarize_variants(calibration_folds),
         "final": {
             "model": model_name,
             "model_label": MODEL_LABELS[model_name],
@@ -130,7 +98,7 @@ def train_target(
             "threshold": threshold,
             "threshold_rule": "Youden's J on out-of-fold calibrated training predictions",
         },
-        "test": _test_report(y_test, test_proba, threshold),
+        "test": test_report(y_test, test_proba, threshold),
     }
     return TargetResult(
         model,
@@ -165,22 +133,6 @@ def _meta(frame: pd.DataFrame, train: np.ndarray, test: np.ndarray) -> dict[str,
             **{package: version(package) for package in VERSIONED_PACKAGES},
         },
     }
-
-
-def _rounded(value: Any, digits: int = 4) -> Any:
-    """Round every float in a nested structure so reruns give byte-identical JSON."""
-    if isinstance(value, float):
-        return round(value, digits)
-    if isinstance(value, dict):
-        return {key: _rounded(item, digits) for key, item in value.items()}
-    if isinstance(value, list | tuple):
-        return [_rounded(item, digits) for item in value]
-    return value
-
-
-def _write_json(path: Path, payload: dict[str, Any]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(_rounded(payload), indent=2, ensure_ascii=False) + "\n")
 
 
 def _save_plots(results: dict[str, TargetResult]) -> None:
@@ -237,7 +189,7 @@ def _save_models(results: dict[str, TargetResult], X_train: pd.DataFrame, test: 
         artifact = f"{target.lower()}.joblib"
         joblib.dump(result.model, MODELS_DIR / artifact)
         manifest["targets"][target] = {"artifact": artifact, **result.report["final"]}
-    _write_json(MANIFEST_PATH, manifest)
+    write_json(MANIFEST_PATH, manifest)
 
 
 def _print_summary(results: dict[str, TargetResult]) -> None:
@@ -279,8 +231,8 @@ def main() -> None:
         "meta": _meta(frame, train, test),
         "targets": {target: result.report for target, result in results.items()},
     }
-    _write_json(METRICS_PATH, metrics)
-    _write_json(FEATURE_CHECKS_PATH, feature_checks(frame))
+    write_json(METRICS_PATH, metrics)
+    write_json(FEATURE_CHECKS_PATH, feature_checks(frame))
     _save_models(results, X.iloc[train], test)
     _save_plots(results)
     _print_summary(results)

@@ -1,5 +1,6 @@
 """Cross-validation loops. Every fold refits preprocessing, model and calibrator from scratch."""
 
+from collections.abc import Sequence
 from dataclasses import dataclass
 
 import numpy as np
@@ -12,6 +13,7 @@ from ml.calibration import fit_with_calibrators, positive_log_odds
 from ml.config import CV_REPEATS, CV_SPLITS, TARGETS, TEST_FRACTION
 from ml.data import target_series
 from ml.models import MODEL_SPECS, SOFT_VOTE, build_pipeline, fit_balanced
+from ml.schema import FeatureSpec
 
 UNCALIBRATED = "uncalibrated"
 DEFAULT_THRESHOLD = 0.5
@@ -57,11 +59,17 @@ def cross_validate_candidates(
 
 
 def cross_validate_calibration(
-    model_name: str, X: pd.DataFrame, y: pd.Series, folds: list[Fold], seed: int
+    model_name: str,
+    X: pd.DataFrame,
+    y: pd.Series,
+    folds: list[Fold],
+    seed: int,
+    features: Sequence[FeatureSpec] | None = None,
 ) -> list[FoldPredictions]:
     """Held-out probabilities of one model: uncalibrated and under each calibration method."""
     return Parallel(n_jobs=-1)(
-        delayed(_calibration_fold)(model_name, X, y, train, test, seed) for train, test in folds
+        delayed(_calibration_fold)(model_name, X, y, train, test, seed, features)
+        for train, test in folds
     )
 
 
@@ -77,9 +85,17 @@ def _candidate_fold(
 
 
 def _calibration_fold(
-    model_name: str, X: pd.DataFrame, y: pd.Series, train: np.ndarray, test: np.ndarray, seed: int
+    model_name: str,
+    X: pd.DataFrame,
+    y: pd.Series,
+    train: np.ndarray,
+    test: np.ndarray,
+    seed: int,
+    features: Sequence[FeatureSpec] | None,
 ) -> FoldPredictions:
-    pipeline, calibrations = fit_with_calibrators(model_name, X.iloc[train], y.iloc[train], seed)
+    pipeline, calibrations = fit_with_calibrators(
+        model_name, X.iloc[train], y.iloc[train], seed, features
+    )
     scores = positive_log_odds(pipeline, X.iloc[test])
     proba = {UNCALIBRATED: expit(scores)}
     thresholds = {UNCALIBRATED: DEFAULT_THRESHOLD}

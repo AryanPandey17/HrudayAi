@@ -1,6 +1,6 @@
 """Candidate model registry. Adding a candidate means adding one ``ModelSpec`` entry."""
 
-from collections.abc import Callable
+from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 
 import numpy as np
@@ -15,7 +15,7 @@ from sklearn.utils.class_weight import compute_sample_weight
 from xgboost import XGBClassifier
 
 from ml.preprocess import build_preprocessor
-from ml.schema import load_schema
+from ml.schema import FeatureSpec, load_schema
 
 SOFT_VOTE = "soft_vote"
 
@@ -108,9 +108,11 @@ MODEL_LABELS: dict[str, str] = {
 }
 
 
-def build_pipeline(model_name: str, seed: int) -> Pipeline:
-    """Unfitted preprocessing + estimator pipeline for a candidate."""
-    preprocessor = build_preprocessor(load_schema().features)
+def build_pipeline(
+    model_name: str, seed: int, features: Sequence[FeatureSpec] | None = None
+) -> Pipeline:
+    """Unfitted preprocessing + estimator pipeline; ``features`` defaults to the full schema."""
+    preprocessor = build_preprocessor(features or load_schema().features)
     return Pipeline(
         [("preprocess", preprocessor), ("model", MODEL_SPECS[model_name].factory(seed))]
     )

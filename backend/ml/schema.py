@@ -51,12 +51,28 @@ class FeatureSpec:
 
 
 @dataclass(frozen=True)
+class Stage:
+    """One rung of the test ladder: the feature groups that become available at this step."""
+
+    id: int
+    key: str
+    label: str
+    groups: tuple[str, ...]
+
+
+@dataclass(frozen=True)
 class FeatureSchema:
-    """All input features, their display groups, and columns deliberately left out."""
+    """All input features, their display groups, ladder stages, and columns left out."""
 
     groups: dict[str, str]
     features: tuple[FeatureSpec, ...]
     excluded: dict[str, str]
+    stages: tuple[Stage, ...]
+
+    def stage_features(self, stage_id: int) -> tuple[FeatureSpec, ...]:
+        """Features available at a stage: its own groups plus those of every earlier stage."""
+        groups = {g for stage in self.stages if stage.id <= stage_id for g in stage.groups}
+        return tuple(feature for feature in self.features if feature.group in groups)
 
     def names(self, *kinds: FeatureKind) -> list[str]:
         """Feature names in schema order, optionally restricted to the given kinds."""
@@ -72,8 +88,15 @@ def load_schema(path: Path = SCHEMA_PATH) -> FeatureSchema:
     raw = json.loads(path.read_text(encoding="utf-8"))
     groups = {group["id"]: group["label"] for group in raw["groups"]}
     features = tuple(_parse_feature(item, raw["option_sets"]) for item in raw["features"])
+    stages = tuple(
+        Stage(item["id"], item["key"], item["label"], tuple(item["groups"]))
+        for item in raw["stages"]
+    )
     _validate(features, groups)
-    return FeatureSchema(groups=groups, features=features, excluded=dict(raw["excluded"]))
+    _validate_stages(stages, groups)
+    return FeatureSchema(
+        groups=groups, features=features, excluded=dict(raw["excluded"]), stages=stages
+    )
 
 
 def _parse_feature(item: dict[str, Any], option_sets: dict[str, list[dict]]) -> FeatureSpec:
@@ -93,6 +116,14 @@ def _parse_feature(item: dict[str, Any], option_sets: dict[str, list[dict]]) -> 
         description=item.get("description"),
         derived=item.get("derived", False),
     )
+
+
+def _validate_stages(stages: tuple[Stage, ...], groups: dict[str, str]) -> None:
+    staged = [group for stage in stages for group in stage.groups]
+    if sorted(staged) != sorted(groups):
+        raise ValueError("Every feature group must belong to exactly one ladder stage")
+    if [stage.id for stage in stages] != list(range(1, len(stages) + 1)):
+        raise ValueError("Stage ids must be 1..n in order")
 
 
 def _validate(features: tuple[FeatureSpec, ...], groups: dict[str, str]) -> None:

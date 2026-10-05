@@ -7,6 +7,7 @@ from typing import Literal
 REPO_ROOT = Path(__file__).resolve().parents[2]
 RAW_DATA_PATH = REPO_ROOT / "data" / "raw" / "z_alizadeh_sani_extension.xlsx"
 MODELS_DIR = REPO_ROOT / "models"
+LADDER_DIR = MODELS_DIR / "ladder"
 REPORTS_DIR = REPO_ROOT / "reports"
 
 SEED = 42
@@ -17,6 +18,10 @@ TEST_FRACTION = 0.2
 CV_SPLITS = 5
 CV_REPEATS = 5
 CALIBRATION_SPLITS = 5
+
+# Test ladder: bootstrap refits per stage model and the percentile interval reported from them.
+N_BOOTSTRAP = 200
+INTERVAL_PERCENTILES = (10, 90)
 
 
 @dataclass(frozen=True)

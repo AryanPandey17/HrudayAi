@@ -6,6 +6,7 @@ refitted on all training rows. This is one base model plus one monotone map, whi
 explanations of the base model directly tied to the displayed probability.
 """
 
+from collections.abc import Sequence
 from dataclasses import dataclass
 from typing import Protocol
 
@@ -20,6 +21,7 @@ from sklearn.pipeline import Pipeline
 from ml.config import CALIBRATION_SPLITS
 from ml.evaluate import youden_threshold
 from ml.models import build_pipeline, fit_balanced
+from ml.schema import FeatureSpec
 
 PROBABILITY_EPS = 1e-6
 
@@ -41,6 +43,15 @@ class SigmoidCalibrator:
 
     def predict(self, scores: np.ndarray) -> np.ndarray:
         return self._model.predict_proba(scores.reshape(-1, 1))[:, 1]
+
+    @property
+    def slope(self) -> float:
+        """Calibrated log-odds = slope * base log-odds + shift."""
+        return float(self._model.coef_[0, 0])
+
+    @property
+    def shift(self) -> float:
+        return float(self._model.intercept_[0])
 
 
 class IsotonicCalibrator:
@@ -82,24 +93,35 @@ def positive_log_odds(pipeline: Pipeline, X: pd.DataFrame) -> np.ndarray:
     return logit(np.clip(proba, PROBABILITY_EPS, 1 - PROBABILITY_EPS))
 
 
-def out_of_fold_log_odds(model_name: str, X: pd.DataFrame, y: pd.Series, seed: int) -> np.ndarray:
+def out_of_fold_log_odds(
+    model_name: str,
+    X: pd.DataFrame,
+    y: pd.Series,
+    seed: int,
+    features: Sequence[FeatureSpec] | None = None,
+) -> np.ndarray:
     """Base-model log-odds for every row, each predicted by a model that did not train on it."""
     folds = StratifiedKFold(n_splits=CALIBRATION_SPLITS, shuffle=True, random_state=seed)
     scores = np.empty(len(y), dtype=float)
     for train, held_out in folds.split(X, y):
-        fitted = fit_balanced(build_pipeline(model_name, seed), X.iloc[train], y.iloc[train])
+        pipeline = build_pipeline(model_name, seed, features)
+        fitted = fit_balanced(pipeline, X.iloc[train], y.iloc[train])
         scores[held_out] = positive_log_odds(fitted, X.iloc[held_out])
     return scores
 
 
 def fit_with_calibrators(
-    model_name: str, X: pd.DataFrame, y: pd.Series, seed: int
+    model_name: str,
+    X: pd.DataFrame,
+    y: pd.Series,
+    seed: int,
+    features: Sequence[FeatureSpec] | None = None,
 ) -> tuple[Pipeline, dict[str, FittedCalibration]]:
     """Fit the base pipeline on all rows, plus every calibrator (and its Youden threshold)
     on the out-of-fold scores."""
-    scores = out_of_fold_log_odds(model_name, X, y, seed)
+    scores = out_of_fold_log_odds(model_name, X, y, seed, features)
     calibrations = {name: _fit_calibration(name, scores, y.to_numpy()) for name in CALIBRATORS}
-    pipeline = fit_balanced(build_pipeline(model_name, seed), X, y)
+    pipeline = fit_balanced(build_pipeline(model_name, seed, features), X, y)
     return pipeline, calibrations
 
 
