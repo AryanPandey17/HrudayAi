@@ -1,0 +1,59 @@
+{
+  "derived_features": {
+    "bmi_max_abs_diff_from_weight_height": 0.0,
+    "obesity_agreement_with_bmi_over_25": 0.9967
+  },
+  "rare_binary_features": {
+    "CRF": 6,
+    "CVA": 5,
+    "Thyroid Disease": 7,
+    "CHF": 1,
+    "LowTH Ang": 2,
+    "Weak Peripheral Pulse": 5,
+    "Diastolic Murmur": 9,
+    "Poor R Progression": 9
+  },
+  "highly_correlated_pairs": [
+    {
+      "a": "Lymph",
+      "b": "Neut",
+      "spearman": -0.9123
+    }
+  ],
+  "top_univariate_auc": {
+    "CAD": {
+      "Typical Chest Pain": 0.799,
+      "Age": 0.7239,
+      "Atypical": 0.712,
+      "EF-TTE": 0.687,
+      "Region RWMA": 0.6717
+    },
+    "LAD": {
+      "Typical Chest Pain": 0.7323,
+      "EF-TTE": 0.7084,
+      "Age": 0.6772,
+      "Region RWMA": 0.6752,
+      "Atypical": 0.6653
+    },
+    "LCX": {
+      "Age": 0.6809,
+      "Typical Chest Pain": 0.6494,
+      "BP": 0.6169,
+      "PLT": 0.6012,
+      "FBS": 0.591
+    },
+    "RCA": {
+      "Typical Chest Pain": 0.6497,
+      "Neut": 0.635,
+      "Age": 0.6349,
+      "Lymph": 0.6284,
+      "DM": 0.6275
+    }
+  },
+  "suspicious_univariate": {
+    "CAD": {},
+    "LAD": {},
+    "LCX": {},
+    "RCA": {}
+  }
+}
