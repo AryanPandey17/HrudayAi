@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
 
+import { ThemeProvider } from "@/components/theme-provider";
+import { Toaster } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { APP_NAME } from "@/lib/config";
 
 import "./globals.css";
@@ -12,16 +15,15 @@ export const metadata: Metadata = {
     "Educational decision-support prototype: predicted CAD and LAD / LCX / RCA stenosis probabilities mapped onto an interactive 3D heart.",
 };
 
-// Applies a saved light/dark choice before first paint; otherwise the system preference wins.
-const THEME_SCRIPT = `try{const t=localStorage.getItem("theme");if(t)document.documentElement.dataset.theme=t}catch{}`;
-
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable} h-full antialiased`} suppressHydrationWarning>
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
-      </head>
-      <body className="min-h-full font-sans">{children}</body>
+    <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`} suppressHydrationWarning>
+      <body className="font-sans antialiased">
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+          <TooltipProvider delayDuration={200}>{children}</TooltipProvider>
+          <Toaster position="bottom-right" />
+        </ThemeProvider>
+      </body>
     </html>
   );
 }
