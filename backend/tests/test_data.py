@@ -3,12 +3,7 @@
 import pytest
 
 from ml.config import EXPECTED_ROWS, LEAKAGE_COLUMNS, TARGETS
-from ml.data import feature_columns, load_raw, target_series
-
-
-@pytest.fixture(scope="module")
-def raw():
-    return load_raw()
+from ml.data import feature_columns, target_series
 
 
 def test_dataset_has_expected_rows_and_no_missing_values(raw):

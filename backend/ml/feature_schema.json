@@ -1,0 +1,76 @@
+{
+  "groups": [
+    {"id": "demographics", "label": "Demographics & history"},
+    {"id": "exam", "label": "Symptoms & examination"},
+    {"id": "ecg", "label": "ECG"},
+    {"id": "lab", "label": "Laboratory"},
+    {"id": "echo", "label": "Echocardiography"}
+  ],
+  "option_sets": {
+    "no_yes_int": [{"value": 0, "label": "No"}, {"value": 1, "label": "Yes"}],
+    "no_yes_str": [{"value": "N", "label": "No"}, {"value": "Y", "label": "Yes"}]
+  },
+  "excluded": {
+    "Exertional CP": "Constant in the dataset (all 'N'); carries no information."
+  },
+  "features": [
+    {"name": "Age", "label": "Age", "group": "demographics", "type": "numeric", "unit": "years", "min": 18, "max": 100, "step": 1},
+    {"name": "Sex", "label": "Sex", "group": "demographics", "type": "binary", "options": [{"value": "Fmale", "label": "Female"}, {"value": "Male", "label": "Male"}]},
+    {"name": "Weight", "label": "Weight", "group": "demographics", "type": "numeric", "unit": "kg", "min": 30, "max": 200, "step": 1},
+    {"name": "Length", "label": "Height", "group": "demographics", "type": "numeric", "unit": "cm", "min": 120, "max": 220, "step": 1},
+    {"name": "BMI", "label": "Body mass index", "group": "demographics", "type": "numeric", "unit": "kg/m²", "min": 10, "max": 60, "step": 0.1, "description": "Weight / height² (derived from weight and height in the dataset)."},
+    {"name": "Obesity", "label": "Obesity", "group": "demographics", "type": "binary", "options": "no_yes_str", "description": "Dataset flag; equals BMI > 25 in the source data."},
+    {"name": "DM", "label": "Diabetes mellitus", "group": "demographics", "type": "binary", "options": "no_yes_int"},
+    {"name": "HTN", "label": "Hypertension", "group": "demographics", "type": "binary", "options": "no_yes_int"},
+    {"name": "DLP", "label": "Dyslipidemia", "group": "demographics", "type": "binary", "options": "no_yes_str"},
+    {"name": "Current Smoker", "label": "Current smoker", "group": "demographics", "type": "binary", "options": "no_yes_int"},
+    {"name": "EX-Smoker", "label": "Ex-smoker", "group": "demographics", "type": "binary", "options": "no_yes_int"},
+    {"name": "FH", "label": "Family history of CAD", "group": "demographics", "type": "binary", "options": "no_yes_int"},
+    {"name": "CRF", "label": "Chronic renal failure", "group": "demographics", "type": "binary", "options": "no_yes_str"},
+    {"name": "CVA", "label": "Cerebrovascular accident", "group": "demographics", "type": "binary", "options": "no_yes_str"},
+    {"name": "Airway disease", "label": "Airway disease", "group": "demographics", "type": "binary", "options": "no_yes_str"},
+    {"name": "Thyroid Disease", "label": "Thyroid disease", "group": "demographics", "type": "binary", "options": "no_yes_str"},
+    {"name": "CHF", "label": "Congestive heart failure", "group": "demographics", "type": "binary", "options": "no_yes_str"},
+
+    {"name": "BP", "label": "Blood pressure", "group": "exam", "type": "numeric", "unit": "mmHg", "min": 60, "max": 260, "step": 1},
+    {"name": "PR", "label": "Pulse rate", "group": "exam", "type": "numeric", "unit": "bpm", "min": 30, "max": 200, "step": 1},
+    {"name": "Typical Chest Pain", "label": "Typical chest pain", "group": "exam", "type": "binary", "options": "no_yes_int"},
+    {"name": "Atypical", "label": "Atypical chest pain", "group": "exam", "type": "binary", "options": "no_yes_str"},
+    {"name": "Nonanginal", "label": "Non-anginal chest pain", "group": "exam", "type": "binary", "options": "no_yes_str"},
+    {"name": "LowTH Ang", "label": "Low-threshold angina", "group": "exam", "type": "binary", "options": "no_yes_str"},
+    {"name": "Dyspnea", "label": "Dyspnea", "group": "exam", "type": "binary", "options": "no_yes_str"},
+    {"name": "Function Class", "label": "Function class", "group": "exam", "type": "ordinal", "description": "Functional class as coded in the dataset (0-3).", "options": [{"value": 0, "label": "0"}, {"value": 1, "label": "1"}, {"value": 2, "label": "2"}, {"value": 3, "label": "3"}]},
+    {"name": "Edema", "label": "Edema", "group": "exam", "type": "binary", "options": "no_yes_int"},
+    {"name": "Weak Peripheral Pulse", "label": "Weak peripheral pulse", "group": "exam", "type": "binary", "options": "no_yes_str"},
+    {"name": "Lung rales", "label": "Lung rales", "group": "exam", "type": "binary", "options": "no_yes_str"},
+    {"name": "Systolic Murmur", "label": "Systolic murmur", "group": "exam", "type": "binary", "options": "no_yes_str"},
+    {"name": "Diastolic Murmur", "label": "Diastolic murmur", "group": "exam", "type": "binary", "options": "no_yes_str"},
+
+    {"name": "Q Wave", "label": "Q wave", "group": "ecg", "type": "binary", "options": "no_yes_int"},
+    {"name": "St Elevation", "label": "ST elevation", "group": "ecg", "type": "binary", "options": "no_yes_int"},
+    {"name": "St Depression", "label": "ST depression", "group": "ecg", "type": "binary", "options": "no_yes_int"},
+    {"name": "Tinversion", "label": "T inversion", "group": "ecg", "type": "binary", "options": "no_yes_int"},
+    {"name": "LVH", "label": "Left ventricular hypertrophy", "group": "ecg", "type": "binary", "options": "no_yes_str"},
+    {"name": "Poor R Progression", "label": "Poor R-wave progression", "group": "ecg", "type": "binary", "options": "no_yes_str"},
+    {"name": "BBB", "label": "Bundle branch block", "group": "ecg", "type": "categorical", "options": [{"value": "N", "label": "None"}, {"value": "LBBB", "label": "Left (LBBB)"}, {"value": "RBBB", "label": "Right (RBBB)"}]},
+
+    {"name": "FBS", "label": "Fasting blood sugar", "group": "lab", "type": "numeric", "unit": "mg/dL", "min": 40, "max": 600, "step": 1},
+    {"name": "CR", "label": "Creatinine", "group": "lab", "type": "numeric", "unit": "mg/dL", "min": 0.2, "max": 10, "step": 0.1},
+    {"name": "BUN", "label": "Blood urea nitrogen", "group": "lab", "type": "numeric", "unit": "mg/dL", "min": 2, "max": 150, "step": 1},
+    {"name": "TG", "label": "Triglycerides", "group": "lab", "type": "numeric", "unit": "mg/dL", "min": 20, "max": 1500, "step": 1},
+    {"name": "LDL", "label": "LDL cholesterol", "group": "lab", "type": "numeric", "unit": "mg/dL", "min": 10, "max": 400, "step": 1},
+    {"name": "HDL", "label": "HDL cholesterol", "group": "lab", "type": "numeric", "unit": "mg/dL", "min": 5, "max": 150, "step": 0.1},
+    {"name": "ESR", "label": "Erythrocyte sedimentation rate", "group": "lab", "type": "numeric", "unit": "mm/h", "min": 0, "max": 150, "step": 1},
+    {"name": "HB", "label": "Hemoglobin", "group": "lab", "type": "numeric", "unit": "g/dL", "min": 4, "max": 22, "step": 0.1},
+    {"name": "K", "label": "Potassium", "group": "lab", "type": "numeric", "unit": "mEq/L", "min": 2, "max": 8, "step": 0.1},
+    {"name": "Na", "label": "Sodium", "group": "lab", "type": "numeric", "unit": "mEq/L", "min": 110, "max": 170, "step": 1},
+    {"name": "WBC", "label": "White blood cells", "group": "lab", "type": "numeric", "unit": "cells/µL", "min": 1000, "max": 50000, "step": 100},
+    {"name": "Lymph", "label": "Lymphocytes", "group": "lab", "type": "numeric", "unit": "%", "min": 0, "max": 100, "step": 1},
+    {"name": "Neut", "label": "Neutrophils", "group": "lab", "type": "numeric", "unit": "%", "min": 0, "max": 100, "step": 1},
+    {"name": "PLT", "label": "Platelets", "group": "lab", "type": "numeric", "unit": "10³/µL", "min": 10, "max": 1000, "step": 1},
+
+    {"name": "EF-TTE", "label": "Ejection fraction (TTE)", "group": "echo", "type": "numeric", "unit": "%", "min": 5, "max": 80, "step": 1},
+    {"name": "Region RWMA", "label": "Regions with RWMA", "group": "echo", "type": "ordinal", "description": "Regional wall motion abnormality, dataset code 0-4 (0 = none).", "options": [{"value": 0, "label": "0"}, {"value": 1, "label": "1"}, {"value": 2, "label": "2"}, {"value": 3, "label": "3"}, {"value": 4, "label": "4"}]},
+    {"name": "VHD", "label": "Valvular heart disease", "group": "echo", "type": "ordinal", "options": [{"value": "N", "label": "None"}, {"value": "mild", "label": "Mild"}, {"value": "Moderate", "label": "Moderate"}, {"value": "Severe", "label": "Severe"}]}
+  ]
+}
