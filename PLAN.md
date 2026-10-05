@@ -36,8 +36,9 @@ backend/
     evaluate.py, selection.py  metrics, corrected t-test, model + calibration selection
     feature_checks.py          redundant / rare / suspicious feature diagnostics
     plots.py, train.py         figures and the `python -m ml.train` entrypoint
-    explain.py                 SHAP global + local                          [Phase 2]
-  api/                         FastAPI app, Pydantic models                 [Phase 3]
+    explain.py                 SHAP global + local, on original features
+    derived.py                 inputs computed from other inputs (BMI, obesity)
+  api/                         FastAPI: main.py (routes), service.py, schemas.py, settings.py
   tests/
 frontend/                      Next.js App Router + TS + Tailwind + R3F     [Phase 4]
 data/raw/                      source .xlsx (tracked, 303 rows)
@@ -56,7 +57,7 @@ Makefile                       setup, audit, train, explain, serve, lint, format
       candidates, held-out stratified test split + repeated stratified K-fold, class weights,
       calibration chosen by CV (Brier, reliability curves), selection by CV ROC-AUC with a
       simplicity tie-break, duplicate / leaky feature check, `make train` regenerates everything.
-- [ ] **Phase 2 — Explainability**: SHAP per target, aggregated back to original features,
+- [x] **Phase 2 — Explainability**: SHAP per target, aggregated back to original features,
       global plots + per-patient top-N contributors.
 - [ ] **Phase 3 — API**: `/health`, `/schema`, `/predict`, `/metrics`, `/examples`; contract tests.
 - [ ] **Phase 4 — Frontend**: R3F heart with LAD / LCX / RCA tubes, probability color mapping,
