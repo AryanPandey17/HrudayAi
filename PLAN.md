@@ -1,4 +1,4 @@
-# PLAN — CardioVis 3D (Multimodal AI Hackathon 2026, Track A)
+# PLAN — HrudayAI (Multimodal AI Hackathon 2026, Track A)
 
 Interactive 3D system that predicts overall CAD and LAD / LCX / RCA stenosis from clinical
 features (Z-Alizadeh Sani extension, 303 patients) and maps calibrated probabilities onto a
@@ -36,6 +36,8 @@ backend/
     evaluate.py, selection.py  metrics, corrected t-test, model + calibration selection
     feature_checks.py          redundant / rare / suspicious feature diagnostics
     plots.py, train.py         figures and the `python -m ml.train` entrypoint
+    reporting.py               report helpers shared by train.py and ladder.py
+    ladder.py, ladder_model.py test-ladder training (`python -m ml.ladder`) and its saved artifact
     explain.py                 SHAP global + local, on original features
     derived.py                 inputs computed from other inputs (BMI, obesity)
   api/                         FastAPI: main.py (routes), service.py, schemas.py, settings.py
@@ -66,9 +68,21 @@ Makefile                       setup, audit, train, explain, serve, lint, format
 - [x] **Phase 2 — Explainability**: SHAP per target, aggregated back to original features,
       global plots + per-patient top-N contributors.
 - [x] **Phase 3 — API**: `/health`, `/schema`, `/predict`, `/metrics`, `/examples`; contract tests.
-- [ ] **Phase 4 — Frontend**: R3F heart with LAD / LCX / RCA tubes, probability color mapping,
+- [x] **Phase 4 — Frontend**: R3F heart with LAD / LCX / RCA tubes, probability color mapping,
       selection + camera focus, schema-driven form, SHAP chart, metrics panel, disclaimer.
-- [ ] **Phase 5 — Docs + polish**: README, docs, demo script, fresh-clone check.
+
+### Round two
+
+- [ ] **Phase 5 — Test ladder (modeling + API)**: four cumulative stages (history + exam, + ECG,
+      + labs, + echo) x four targets, validated like Phase 1, stage-to-stage gains tested,
+      bootstrap intervals, `/predict` with partial input, `GET /ladder`.
+- [ ] **Phase 6 — Report upload and extraction (backend)**: local OCR, schema-driven parsing,
+      `POST /extract`, synthetic sample reports, measured field accuracy.
+- [ ] **Phase 7 — UI redesign**: shadcn/ui design system, light + dark, ladder stepper, upload
+      review dialog.
+- [ ] **Phase 8 — Better 3D heart**: open-licensed model if one fits, otherwise an upgraded
+      procedural heart; surface-snapped vessels.
+- [ ] **Docs + polish** (deferred from round one): README, docs, demo script, fresh-clone check.
 
 Each phase ends with real command output and a stop for review.
 
