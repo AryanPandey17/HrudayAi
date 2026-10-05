@@ -211,9 +211,28 @@ def _save_plots(results: dict[str, TargetResult]) -> None:
     plots.plot_candidate_comparison(cv_auc, plots.PLOTS_DIR / "cv_auc_comparison.png")
 
 
-def _save_models(results: dict[str, TargetResult], test: np.ndarray) -> None:
+def _feature_defaults(X_train: pd.DataFrame) -> dict[str, Any]:
+    """Form defaults: training median (snapped to the input step) or most frequent option."""
+    defaults: dict[str, Any] = {}
+    for feature in load_schema().features:
+        column = X_train[feature.name]
+        if feature.kind == "numeric":
+            snapped = round(float(column.median()) / feature.step) * feature.step
+            defaults[feature.name] = round(snapped, 6)
+        else:
+            mode = column.mode().iloc[0]
+            defaults[feature.name] = mode.item() if isinstance(mode, np.generic) else mode
+    return defaults
+
+
+def _save_models(results: dict[str, TargetResult], X_train: pd.DataFrame, test: np.ndarray) -> None:
     MODELS_DIR.mkdir(parents=True, exist_ok=True)
-    manifest: dict[str, Any] = {"seed": SEED, "test_row_indices": test.tolist(), "targets": {}}
+    manifest: dict[str, Any] = {
+        "seed": SEED,
+        "test_row_indices": test.tolist(),
+        "feature_defaults": _feature_defaults(X_train),
+        "targets": {},
+    }
     for target, result in results.items():
         artifact = f"{target.lower()}.joblib"
         joblib.dump(result.model, MODELS_DIR / artifact)
@@ -262,7 +281,7 @@ def main() -> None:
     }
     _write_json(METRICS_PATH, metrics)
     _write_json(FEATURE_CHECKS_PATH, feature_checks(frame))
-    _save_models(results, test)
+    _save_models(results, X.iloc[train], test)
     _save_plots(results)
     _print_summary(results)
     print(f"\nwrote {METRICS_PATH.name}, {FEATURE_CHECKS_PATH.name}, plots/ and models/")

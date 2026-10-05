@@ -7,6 +7,7 @@ from sklearn.metrics import roc_auc_score
 
 from ml.config import TARGETS
 from ml.data import target_series
+from ml.derived import OBESITY_BMI_CUTOFF
 from ml.preprocess import SchemaEncoder
 from ml.schema import load_schema
 
@@ -14,7 +15,6 @@ CORRELATION_FLAG = 0.8
 UNIVARIATE_AUC_FLAG = 0.9
 RARE_MINORITY_COUNT = 10
 TOP_UNIVARIATE = 5
-OBESITY_BMI_CUTOFF = 25
 
 
 def feature_checks(frame: pd.DataFrame) -> dict[str, Any]:

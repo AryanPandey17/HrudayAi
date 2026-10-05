@@ -2,6 +2,7 @@
 
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Literal
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 RAW_DATA_PATH = REPO_ROOT / "data" / "raw" / "z_alizadeh_sani_extension.xlsx"
@@ -27,16 +28,19 @@ class TargetSpec:
     positive_label: str
     negative_label: str
     description: str
+    scope: Literal["overall", "vessel"]
 
 
 # Adding a vessel (or any other binary target) means adding one entry here.
 TARGETS: dict[str, TargetSpec] = {
     spec.name: spec
     for spec in (
-        TargetSpec("CAD", "Cath", "CAD", "Normal", "Overall coronary artery disease"),
-        TargetSpec("LAD", "LAD", "Stenotic", "Normal", "Left anterior descending stenosis"),
-        TargetSpec("LCX", "LCX", "Stenotic", "Normal", "Left circumflex stenosis"),
-        TargetSpec("RCA", "RCA", "Stenotic", "Normal", "Right coronary artery stenosis"),
+        TargetSpec("CAD", "Cath", "CAD", "Normal", "Overall coronary artery disease", "overall"),
+        TargetSpec(
+            "LAD", "LAD", "Stenotic", "Normal", "Left anterior descending stenosis", "vessel"
+        ),
+        TargetSpec("LCX", "LCX", "Stenotic", "Normal", "Left circumflex stenosis", "vessel"),
+        TargetSpec("RCA", "RCA", "Stenotic", "Normal", "Right coronary artery stenosis", "vessel"),
     )
 }
 

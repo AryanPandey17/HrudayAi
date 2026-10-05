@@ -38,6 +38,7 @@ class FeatureSpec:
     step: float | None = None
     options: tuple[Option, ...] = ()
     description: str | None = None
+    derived: bool = False
 
     @property
     def codes(self) -> dict[str | int, int]:
@@ -90,6 +91,7 @@ def _parse_feature(item: dict[str, Any], option_sets: dict[str, list[dict]]) -> 
         step=item.get("step"),
         options=tuple(Option(option["value"], option["label"]) for option in options),
         description=item.get("description"),
+        derived=item.get("derived", False),
     )
 
 
