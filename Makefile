@@ -1,4 +1,4 @@
-.PHONY: setup audit train explain serve lint format
+.PHONY: setup audit train explain serve test lint format
 
 BACKEND := backend
 
@@ -16,6 +16,9 @@ explain:  ## Regenerate only the SHAP reports from the saved models
 
 serve:  ## Run the API on http://localhost:8000 (Phase 3)
 	cd $(BACKEND) && uv run uvicorn api.main:app --reload --port 8000
+
+test:  ## Run the leakage-guard tests
+	cd $(BACKEND) && uv run pytest
 
 lint:  ## Lint and check formatting
 	cd $(BACKEND) && uv run ruff check . && uv run ruff format --check .
