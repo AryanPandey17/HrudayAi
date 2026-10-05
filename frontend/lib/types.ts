@@ -21,6 +21,8 @@ export interface Feature {
   description: string | null;
   derived: boolean;
   default: Scalar;
+  /** First ladder stage at which this feature is used. */
+  stage: number;
 }
 
 export interface FeatureGroup {
@@ -61,8 +63,27 @@ export interface Contribution {
   probability_impact: number;
 }
 
+/** Percentile interval of a probability over bootstrap refits of the stage model. */
+export interface Interval {
+  low: number;
+  high: number;
+  lower_percentile: number;
+  upper_percentile: number;
+  n_bootstrap: number;
+}
+
+export interface StageMetrics {
+  cv_roc_auc: MeanStd;
+  cv_f1: MeanStd;
+  cv_brier: MeanStd;
+  test_roc_auc: number;
+  test_roc_auc_ci95: [number, number];
+}
+
 export interface TargetPrediction {
   probability: number;
+  interval: Interval;
+  stage_metrics: StageMetrics;
   positive: boolean;
   label: string;
   threshold: number;
@@ -75,6 +96,10 @@ export interface TargetPrediction {
 }
 
 export interface PredictResponse {
+  stage: { id: number; key: string; label: string };
+  stage_selection: "requested" | "highest_complete";
+  ignored_features: string[];
+  missing_for_next_stage: string[];
   predictions: Record<string, TargetPrediction>;
   features: Record<string, Scalar>;
   disclaimer: string;
@@ -109,25 +134,47 @@ export interface ThresholdMetrics {
   brier: number;
 }
 
-export interface TargetMetrics {
-  description: string;
-  prevalence: { train: number; test: number };
-  calibration_cv: Record<string, Record<keyof ThresholdMetrics, MeanStd>>;
-  final: { model: string; model_label: string; calibration: string; threshold: number };
+export interface StageGain {
+  mean_cv_auc_gain: number;
+  p_value: number;
+  distinguishable_from_noise: boolean;
+}
+
+/** Saved validation report of one target at one ladder stage (reports/ladder_metrics.json). */
+export interface StageReport {
+  stage: number;
+  label: string;
+  n_features: number;
+  threshold: number;
+  cv: Record<keyof ThresholdMetrics, MeanStd>;
   test: {
     n: number;
     n_positive: number;
     roc_auc_ci95: [number, number];
     at_selected_threshold: ThresholdMetrics;
   };
+  interval: { mean_width_test: number; median_width_test: number };
+  gain_vs_previous_stage: StageGain | null;
+}
+
+export interface LadderStage {
+  id: number;
+  key: string;
+  label: string;
+  groups: string[];
+  added_features: string[];
+  required_features: string[];
+  n_model_features: number;
+}
+
+export interface LadderResponse {
+  stages: LadderStage[];
+  meta: { cv: { splits: number; repeats: number }; model: string; calibration: string };
+  metrics: Record<string, { stages: Record<string, StageReport> }>;
 }
 
 export interface MetricsResponse {
-  metrics: {
-    meta: { n_rows: number; n_train: number; n_test: number; cv: { splits: number; repeats: number } };
-    targets: Record<string, TargetMetrics>;
-  };
-  global_importance: Record<string, { feature: string; label: string; mean_abs_shap: number }[]>;
+  metrics: { meta: { n_rows: number; n_train: number; n_test: number } };
 }
 
 export interface FieldError {

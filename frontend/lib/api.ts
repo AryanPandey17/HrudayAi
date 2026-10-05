@@ -1,6 +1,7 @@
 import type {
   ExamplesResponse,
   FieldError,
+  LadderResponse,
   MetricsResponse,
   PredictResponse,
   Scalar,
@@ -38,12 +39,15 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 export const fetchSchema = () => request<SchemaResponse>("/schema");
 export const fetchExamples = () => request<ExamplesResponse>("/examples");
 export const fetchMetrics = () => request<MetricsResponse>("/metrics");
+export const fetchLadder = () => request<LadderResponse>("/ladder");
 
-export function predict(
+/** Predict at one explicit ladder stage from that stage's inputs. */
+export function predictAtStage(
   features: Record<string, Scalar>,
+  stage: number,
   signal?: AbortSignal,
 ): Promise<PredictResponse> {
-  return request<PredictResponse>("/predict?top_n=6", {
+  return request<PredictResponse>(`/predict?stage=${stage}&top_n=6`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(features),

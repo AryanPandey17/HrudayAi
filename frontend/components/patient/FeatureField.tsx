@@ -1,3 +1,7 @@
+import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupText } from "@/components/ui/input-group";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { fieldError, type FieldState } from "@/lib/form";
 import type { Feature } from "@/lib/types";
 
@@ -7,73 +11,83 @@ interface FeatureFieldProps {
   onChange: (name: string, text: string) => void;
 }
 
-const INPUT =
-  "h-8 w-full rounded-md border bg-bg px-2 text-sm tabular-nums placeholder:text-muted/70 focus-visible:outline-2";
+// The chosen option gets an inset accent ring and stronger text, so the state reads without colour fill.
+const SELECTED_TOGGLE =
+  "data-[state=on]:bg-primary/10 data-[state=on]:font-semibold data-[state=on]:shadow-[inset_0_0_0_1px_var(--primary)]";
 
-/** One schema-driven input: number box, yes/no segmented control, or select. */
+/** One schema-driven input: number with unit suffix, two-option toggle, or select. */
 export function FeatureField({ feature, field, onChange }: FeatureFieldProps) {
   const text = field?.text ?? "";
   const error = text ? fieldError(feature, text) : null;
   const isPlaceholder = field?.source === "placeholder";
-  const border = error ? "border-red-500" : isPlaceholder ? "border-dashed border-warn-border" : "border-border";
-  const id = `feature-${feature.name}`;
+  const id = `feature-${feature.name.replace(/\W+/g, "-")}`;
   const typical =
     feature.type === "numeric" ? String(feature.default) : feature.options.find((o) => o.value === feature.default)?.label;
+  const dashed = isPlaceholder ? "border-dashed" : "";
 
   return (
-    <div>
-      <div className="mb-1 flex items-baseline justify-between gap-2">
-        <label htmlFor={id} className="truncate text-xs font-medium" title={feature.description ?? feature.label}>
+    <div className="min-w-0">
+      <div className="mb-1.5 flex items-baseline justify-between gap-2">
+        <Label htmlFor={id} className="truncate text-[13px]" title={feature.description ?? feature.label}>
           {feature.label}
-          {feature.unit && <span className="ml-1 font-normal text-muted">({feature.unit})</span>}
-        </label>
-        {isPlaceholder && <span className="shrink-0 text-[10px] font-semibold uppercase text-warn-fg">placeholder</span>}
+        </Label>
+        {isPlaceholder && <span className="shrink-0 text-xs text-muted-foreground">placeholder</span>}
       </div>
       {feature.type === "numeric" ? (
-        <input
-          id={id}
-          type="number"
-          inputMode="decimal"
-          min={feature.min ?? undefined}
-          max={feature.max ?? undefined}
-          step={feature.step ?? "any"}
-          value={text}
-          placeholder={`typical ${typical}`}
-          aria-invalid={Boolean(error)}
-          aria-describedby={error ? `${id}-error` : undefined}
-          onChange={(event) => onChange(feature.name, event.target.value)}
-          className={`${INPUT} ${border}`}
-        />
+        <InputGroup className={`h-8 ${dashed}`}>
+          <InputGroupInput
+            id={id}
+            type="number"
+            inputMode="decimal"
+            min={feature.min ?? undefined}
+            max={feature.max ?? undefined}
+            step={feature.step ?? "any"}
+            value={text}
+            placeholder={`e.g. ${typical}`}
+            aria-invalid={Boolean(error)}
+            aria-describedby={error ? `${id}-error` : undefined}
+            onChange={(event) => onChange(feature.name, event.target.value)}
+            className="tabular-nums"
+          />
+          {feature.unit && (
+            <InputGroupAddon align="inline-end">
+              <InputGroupText className="text-xs">{feature.unit}</InputGroupText>
+            </InputGroupAddon>
+          )}
+        </InputGroup>
       ) : feature.type === "binary" ? (
-        <div id={id} role="radiogroup" aria-label={feature.label} className={`grid h-8 grid-cols-2 overflow-hidden rounded-md border ${border}`}>
-          {feature.options.map((option, index) => {
-            const active = text === String(index);
-            return (
-              <button
-                key={option.label}
-                type="button"
-                role="radio"
-                aria-checked={active}
-                onClick={() => onChange(feature.name, String(index))}
-                className={`text-xs font-medium ${active ? "bg-accent text-accent-fg" : "bg-bg text-muted hover:text-fg"}`}
-              >
-                {option.label}
-              </button>
-            );
-          })}
-        </div>
-      ) : (
-        <select id={id} value={text} onChange={(event) => onChange(feature.name, event.target.value)} className={`${INPUT} ${border}`}>
-          <option value="">typical {typical}</option>
+        <ToggleGroup
+          id={id}
+          type="single"
+          variant="outline"
+          size="sm"
+          value={text}
+          onValueChange={(value) => value && onChange(feature.name, value)}
+          aria-label={feature.label}
+          className={`w-full ${dashed}`}
+        >
           {feature.options.map((option, index) => (
-            <option key={option.label} value={index}>
+            <ToggleGroupItem key={option.label} value={String(index)} className={`flex-1 ${SELECTED_TOGGLE}`}>
               {option.label}
-            </option>
+            </ToggleGroupItem>
           ))}
-        </select>
+        </ToggleGroup>
+      ) : (
+        <Select value={text} onValueChange={(value) => onChange(feature.name, value)}>
+          <SelectTrigger id={id} size="sm" className={`w-full ${dashed}`}>
+            <SelectValue placeholder={`e.g. ${typical}`} />
+          </SelectTrigger>
+          <SelectContent>
+            {feature.options.map((option, index) => (
+              <SelectItem key={option.label} value={String(index)}>
+                {option.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       )}
       {error && (
-        <p id={`${id}-error`} className="mt-1 text-[11px] text-red-500">
+        <p id={`${id}-error`} className="mt-1 text-xs text-destructive">
           {error}
         </p>
       )}
