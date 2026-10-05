@@ -73,15 +73,14 @@ Makefile                       setup, audit, train, explain, serve, lint, format
 
 ### Round two
 
-- [ ] **Phase 5 — Test ladder (modeling + API)**: four cumulative stages (history + exam, + ECG,
+- [x] **Phase 5 — Test ladder (modeling + API)**: four cumulative stages (history + exam, + ECG,
       + labs, + echo) x four targets, validated like Phase 1, stage-to-stage gains tested,
       bootstrap intervals, `/predict` with partial input, `GET /ladder`.
-- [ ] **Phase 6 — Report upload and extraction (backend)**: local OCR, schema-driven parsing,
-      `POST /extract`, synthetic sample reports, measured field accuracy.
-- [ ] **Phase 7 — UI redesign**: shadcn/ui design system, light + dark, ladder stepper, upload
+- **Phase 6 — Report upload and extraction**: dropped by decision; not built.
+- [x] **Phase 7 — UI redesign**: shadcn/ui design system, light + dark, ladder stepper, upload
       review dialog.
-- [ ] **Phase 8 — Better 3D heart**: open-licensed model if one fits, otherwise an upgraded
-      procedural heart; surface-snapped vessels.
+- [x] **Phase 8 — Better 3D heart**: BodyParts3D anatomy (CC BY-SA 2.1 JP) with the real
+      LAD / LCX / RCA meshes; see `tools/heart_model/`.
 - [ ] **Docs + polish** (deferred from round one): README, docs, demo script, fresh-clone check.
 
 Each phase ends with real command output and a stop for review.
