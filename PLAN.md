@@ -40,7 +40,13 @@ backend/
     derived.py                 inputs computed from other inputs (BMI, obesity)
   api/                         FastAPI: main.py (routes), service.py, schemas.py, settings.py
   tests/
-frontend/                      Next.js App Router + TS + Tailwind + R3F     [Phase 4]
+frontend/                      Next.js (App Router) + TypeScript + Tailwind + React Three Fiber
+  app/                         layout, page, theme tokens
+  components/heart/            3D scene: procedural heart, coronary vessels, camera, labels
+  components/patient/          example picker and schema-generated form
+  components/results/          prediction cards, SHAP chart, measurements, metrics
+  lib/heart/                   surface function and vessel path definitions
+  lib/, hooks/                 API client, types, form logic, risk colours, data hooks
 data/raw/                      source .xlsx (tracked, 303 rows)
 data/processed/                derived data (gitignored)
 models/                        *.joblib artifacts
@@ -59,7 +65,7 @@ Makefile                       setup, audit, train, explain, serve, lint, format
       simplicity tie-break, duplicate / leaky feature check, `make train` regenerates everything.
 - [x] **Phase 2 — Explainability**: SHAP per target, aggregated back to original features,
       global plots + per-patient top-N contributors.
-- [ ] **Phase 3 — API**: `/health`, `/schema`, `/predict`, `/metrics`, `/examples`; contract tests.
+- [x] **Phase 3 — API**: `/health`, `/schema`, `/predict`, `/metrics`, `/examples`; contract tests.
 - [ ] **Phase 4 — Frontend**: R3F heart with LAD / LCX / RCA tubes, probability color mapping,
       selection + camera focus, schema-driven form, SHAP chart, metrics panel, disclaimer.
 - [ ] **Phase 5 — Docs + polish**: README, docs, demo script, fresh-clone check.
