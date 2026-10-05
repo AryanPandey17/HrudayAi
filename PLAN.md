@@ -27,9 +27,15 @@ backend/
     config.py                  paths, seed, target + leakage column definitions
     data.py                    load raw .xlsx (openpyxl) -> DataFrame
     audit.py                   Phase 0 dataset audit -> reports/data_audit.json
-    schema.py / schema.json    feature schema (type, range, group, label)   [Phase 1]
-    preprocess.py              shared sklearn ColumnTransformer             [Phase 1]
-    train.py, evaluate.py      CV, calibration, selection, plots            [Phase 1]
+    feature_schema.json        every input: type, range/options, unit, group, label
+    schema.py                  typed loader for the schema
+    preprocess.py              shared preprocessing (SchemaEncoder + ColumnTransformer)
+    models.py                  candidate registry, class-balanced fitting
+    cv.py                      hold-out split, repeated stratified K-fold loops
+    calibration.py             Platt / isotonic on out-of-fold scores, CalibratedModel artifact
+    evaluate.py, selection.py  metrics, corrected t-test, model + calibration selection
+    feature_checks.py          redundant / rare / suspicious feature diagnostics
+    plots.py, train.py         figures and the `python -m ml.train` entrypoint
     explain.py                 SHAP global + local                          [Phase 2]
   api/                         FastAPI app, Pydantic models                 [Phase 3]
   tests/
@@ -45,7 +51,7 @@ Makefile                       setup, train, serve, test, lint, audit
 
 ## Phases
 
-- [ ] **Phase 0 — Setup**: uv project, deps, ruff, pytest, Makefile, dataset audit.
+- [x] **Phase 0 — Setup**: uv project, deps, ruff, pytest, Makefile, dataset audit.
 - [ ] **Phase 1 — Data + modeling**: feature schema, shared preprocessing, 4 targets x 4-5
       candidates, held-out stratified test split + repeated stratified K-fold, class weights,
       calibration chosen by CV (Brier, reliability curves), selection by CV ROC-AUC with a
