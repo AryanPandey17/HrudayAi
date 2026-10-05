@@ -1,0 +1,622 @@
+{
+  "shape": {
+    "rows": 303,
+    "columns": 59
+  },
+  "n_features": 55,
+  "leakage_columns_present": [
+    "Cath",
+    "LAD",
+    "LCX",
+    "RCA"
+  ],
+  "dtype_counts": {
+    "int64": 29,
+    "str": 25,
+    "float64": 5
+  },
+  "missing_total": 0,
+  "missing_by_column": {},
+  "duplicate_rows": 0,
+  "duplicate_feature_rows": 0,
+  "constant_columns": [
+    "Exertional CP"
+  ],
+  "columns": {
+    "Age": {
+      "dtype": "int64",
+      "n_unique": 46,
+      "n_missing": 0,
+      "min": 30.0,
+      "max": 86.0,
+      "mean": 58.8977
+    },
+    "Weight": {
+      "dtype": "int64",
+      "n_unique": 54,
+      "n_missing": 0,
+      "min": 48.0,
+      "max": 120.0,
+      "mean": 73.8317
+    },
+    "Length": {
+      "dtype": "int64",
+      "n_unique": 44,
+      "n_missing": 0,
+      "min": 140.0,
+      "max": 188.0,
+      "mean": 164.7162
+    },
+    "Sex": {
+      "dtype": "str",
+      "n_unique": 2,
+      "n_missing": 0,
+      "value_counts": {
+        "Male": 176,
+        "Fmale": 127
+      }
+    },
+    "BMI": {
+      "dtype": "float64",
+      "n_unique": 262,
+      "n_missing": 0,
+      "min": 18.1154127100073,
+      "max": 40.9006577837747,
+      "mean": 27.2483
+    },
+    "DM": {
+      "dtype": "int64",
+      "n_unique": 2,
+      "n_missing": 0,
+      "value_counts": {
+        "0": 213,
+        "1": 90
+      },
+      "min": 0.0,
+      "max": 1.0,
+      "mean": 0.297
+    },
+    "HTN": {
+      "dtype": "int64",
+      "n_unique": 2,
+      "n_missing": 0,
+      "value_counts": {
+        "1": 179,
+        "0": 124
+      },
+      "min": 0.0,
+      "max": 1.0,
+      "mean": 0.5908
+    },
+    "Current Smoker": {
+      "dtype": "int64",
+      "n_unique": 2,
+      "n_missing": 0,
+      "value_counts": {
+        "0": 240,
+        "1": 63
+      },
+      "min": 0.0,
+      "max": 1.0,
+      "mean": 0.2079
+    },
+    "EX-Smoker": {
+      "dtype": "int64",
+      "n_unique": 2,
+      "n_missing": 0,
+      "value_counts": {
+        "0": 293,
+        "1": 10
+      },
+      "min": 0.0,
+      "max": 1.0,
+      "mean": 0.033
+    },
+    "FH": {
+      "dtype": "int64",
+      "n_unique": 2,
+      "n_missing": 0,
+      "value_counts": {
+        "0": 255,
+        "1": 48
+      },
+      "min": 0.0,
+      "max": 1.0,
+      "mean": 0.1584
+    },
+    "Obesity": {
+      "dtype": "str",
+      "n_unique": 2,
+      "n_missing": 0,
+      "value_counts": {
+        "Y": 211,
+        "N": 92
+      }
+    },
+    "CRF": {
+      "dtype": "str",
+      "n_unique": 2,
+      "n_missing": 0,
+      "value_counts": {
+        "N": 297,
+        "Y": 6
+      }
+    },
+    "CVA": {
+      "dtype": "str",
+      "n_unique": 2,
+      "n_missing": 0,
+      "value_counts": {
+        "N": 298,
+        "Y": 5
+      }
+    },
+    "Airway disease": {
+      "dtype": "str",
+      "n_unique": 2,
+      "n_missing": 0,
+      "value_counts": {
+        "N": 292,
+        "Y": 11
+      }
+    },
+    "Thyroid Disease": {
+      "dtype": "str",
+      "n_unique": 2,
+      "n_missing": 0,
+      "value_counts": {
+        "N": 296,
+        "Y": 7
+      }
+    },
+    "CHF": {
+      "dtype": "str",
+      "n_unique": 2,
+      "n_missing": 0,
+      "value_counts": {
+        "N": 302,
+        "Y": 1
+      }
+    },
+    "DLP": {
+      "dtype": "str",
+      "n_unique": 2,
+      "n_missing": 0,
+      "value_counts": {
+        "N": 191,
+        "Y": 112
+      }
+    },
+    "BP": {
+      "dtype": "int64",
+      "n_unique": 17,
+      "n_missing": 0,
+      "min": 90.0,
+      "max": 190.0,
+      "mean": 129.5545
+    },
+    "PR": {
+      "dtype": "int64",
+      "n_unique": 21,
+      "n_missing": 0,
+      "min": 50.0,
+      "max": 110.0,
+      "mean": 75.1419
+    },
+    "Edema": {
+      "dtype": "int64",
+      "n_unique": 2,
+      "n_missing": 0,
+      "value_counts": {
+        "0": 291,
+        "1": 12
+      },
+      "min": 0.0,
+      "max": 1.0,
+      "mean": 0.0396
+    },
+    "Weak Peripheral Pulse": {
+      "dtype": "str",
+      "n_unique": 2,
+      "n_missing": 0,
+      "value_counts": {
+        "N": 298,
+        "Y": 5
+      }
+    },
+    "Lung rales": {
+      "dtype": "str",
+      "n_unique": 2,
+      "n_missing": 0,
+      "value_counts": {
+        "N": 292,
+        "Y": 11
+      }
+    },
+    "Systolic Murmur": {
+      "dtype": "str",
+      "n_unique": 2,
+      "n_missing": 0,
+      "value_counts": {
+        "N": 262,
+        "Y": 41
+      }
+    },
+    "Diastolic Murmur": {
+      "dtype": "str",
+      "n_unique": 2,
+      "n_missing": 0,
+      "value_counts": {
+        "N": 294,
+        "Y": 9
+      }
+    },
+    "Typical Chest Pain": {
+      "dtype": "int64",
+      "n_unique": 2,
+      "n_missing": 0,
+      "value_counts": {
+        "1": 164,
+        "0": 139
+      },
+      "min": 0.0,
+      "max": 1.0,
+      "mean": 0.5413
+    },
+    "Dyspnea": {
+      "dtype": "str",
+      "n_unique": 2,
+      "n_missing": 0,
+      "value_counts": {
+        "N": 169,
+        "Y": 134
+      }
+    },
+    "Function Class": {
+      "dtype": "int64",
+      "n_unique": 4,
+      "n_missing": 0,
+      "value_counts": {
+        "0": 211,
+        "2": 73,
+        "3": 18,
+        "1": 1
+      },
+      "min": 0.0,
+      "max": 3.0,
+      "mean": 0.6634
+    },
+    "Atypical": {
+      "dtype": "str",
+      "n_unique": 2,
+      "n_missing": 0,
+      "value_counts": {
+        "N": 210,
+        "Y": 93
+      }
+    },
+    "Nonanginal": {
+      "dtype": "str",
+      "n_unique": 2,
+      "n_missing": 0,
+      "value_counts": {
+        "N": 287,
+        "Y": 16
+      }
+    },
+    "Exertional CP": {
+      "dtype": "str",
+      "n_unique": 1,
+      "n_missing": 0,
+      "value_counts": {
+        "N": 303
+      }
+    },
+    "LowTH Ang": {
+      "dtype": "str",
+      "n_unique": 2,
+      "n_missing": 0,
+      "value_counts": {
+        "N": 301,
+        "Y": 2
+      }
+    },
+    "Q Wave": {
+      "dtype": "int64",
+      "n_unique": 2,
+      "n_missing": 0,
+      "value_counts": {
+        "0": 287,
+        "1": 16
+      },
+      "min": 0.0,
+      "max": 1.0,
+      "mean": 0.0528
+    },
+    "St Elevation": {
+      "dtype": "int64",
+      "n_unique": 2,
+      "n_missing": 0,
+      "value_counts": {
+        "0": 289,
+        "1": 14
+      },
+      "min": 0.0,
+      "max": 1.0,
+      "mean": 0.0462
+    },
+    "St Depression": {
+      "dtype": "int64",
+      "n_unique": 2,
+      "n_missing": 0,
+      "value_counts": {
+        "0": 232,
+        "1": 71
+      },
+      "min": 0.0,
+      "max": 1.0,
+      "mean": 0.2343
+    },
+    "Tinversion": {
+      "dtype": "int64",
+      "n_unique": 2,
+      "n_missing": 0,
+      "value_counts": {
+        "0": 213,
+        "1": 90
+      },
+      "min": 0.0,
+      "max": 1.0,
+      "mean": 0.297
+    },
+    "LVH": {
+      "dtype": "str",
+      "n_unique": 2,
+      "n_missing": 0,
+      "value_counts": {
+        "N": 283,
+        "Y": 20
+      }
+    },
+    "Poor R Progression": {
+      "dtype": "str",
+      "n_unique": 2,
+      "n_missing": 0,
+      "value_counts": {
+        "N": 294,
+        "Y": 9
+      }
+    },
+    "BBB": {
+      "dtype": "str",
+      "n_unique": 3,
+      "n_missing": 0,
+      "value_counts": {
+        "N": 282,
+        "LBBB": 13,
+        "RBBB": 8
+      }
+    },
+    "FBS": {
+      "dtype": "int64",
+      "n_unique": 113,
+      "n_missing": 0,
+      "min": 62.0,
+      "max": 400.0,
+      "mean": 119.1848
+    },
+    "CR": {
+      "dtype": "float64",
+      "n_unique": 18,
+      "n_missing": 0,
+      "min": 0.5,
+      "max": 2.2,
+      "mean": 1.0556
+    },
+    "TG": {
+      "dtype": "int64",
+      "n_unique": 147,
+      "n_missing": 0,
+      "min": 37.0,
+      "max": 1050.0,
+      "mean": 150.3432
+    },
+    "LDL": {
+      "dtype": "int64",
+      "n_unique": 110,
+      "n_missing": 0,
+      "min": 18.0,
+      "max": 232.0,
+      "mean": 104.6436
+    },
+    "HDL": {
+      "dtype": "float64",
+      "n_unique": 47,
+      "n_missing": 0,
+      "min": 15.9,
+      "max": 111.0,
+      "mean": 40.234
+    },
+    "BUN": {
+      "dtype": "int64",
+      "n_unique": 33,
+      "n_missing": 0,
+      "min": 6.0,
+      "max": 52.0,
+      "mean": 17.5017
+    },
+    "ESR": {
+      "dtype": "int64",
+      "n_unique": 58,
+      "n_missing": 0,
+      "min": 1.0,
+      "max": 90.0,
+      "mean": 19.462
+    },
+    "HB": {
+      "dtype": "float64",
+      "n_unique": 66,
+      "n_missing": 0,
+      "min": 8.9,
+      "max": 17.6,
+      "mean": 13.1535
+    },
+    "K": {
+      "dtype": "float64",
+      "n_unique": 27,
+      "n_missing": 0,
+      "min": 3.0,
+      "max": 6.6,
+      "mean": 4.2307
+    },
+    "Na": {
+      "dtype": "int64",
+      "n_unique": 25,
+      "n_missing": 0,
+      "min": 128.0,
+      "max": 156.0,
+      "mean": 140.9967
+    },
+    "WBC": {
+      "dtype": "int64",
+      "n_unique": 78,
+      "n_missing": 0,
+      "min": 3700.0,
+      "max": 18000.0,
+      "mean": 7562.0462
+    },
+    "Lymph": {
+      "dtype": "int64",
+      "n_unique": 50,
+      "n_missing": 0,
+      "min": 7.0,
+      "max": 60.0,
+      "mean": 32.3993
+    },
+    "Neut": {
+      "dtype": "int64",
+      "n_unique": 52,
+      "n_missing": 0,
+      "min": 32.0,
+      "max": 89.0,
+      "mean": 60.1485
+    },
+    "PLT": {
+      "dtype": "int64",
+      "n_unique": 135,
+      "n_missing": 0,
+      "min": 25.0,
+      "max": 742.0,
+      "mean": 221.4884
+    },
+    "EF-TTE": {
+      "dtype": "int64",
+      "n_unique": 11,
+      "n_missing": 0,
+      "min": 15.0,
+      "max": 60.0,
+      "mean": 47.231
+    },
+    "Region RWMA": {
+      "dtype": "int64",
+      "n_unique": 5,
+      "n_missing": 0,
+      "value_counts": {
+        "0": 217,
+        "2": 32,
+        "1": 26,
+        "4": 14,
+        "3": 14
+      },
+      "min": 0.0,
+      "max": 4.0,
+      "mean": 0.6205
+    },
+    "VHD": {
+      "dtype": "str",
+      "n_unique": 4,
+      "n_missing": 0,
+      "value_counts": {
+        "mild": 149,
+        "N": 116,
+        "Moderate": 27,
+        "Severe": 11
+      }
+    },
+    "LAD": {
+      "dtype": "str",
+      "n_unique": 2,
+      "n_missing": 0,
+      "value_counts": {
+        "Stenotic": 177,
+        "Normal": 126
+      }
+    },
+    "LCX": {
+      "dtype": "str",
+      "n_unique": 2,
+      "n_missing": 0,
+      "value_counts": {
+        "Normal": 184,
+        "Stenotic": 119
+      }
+    },
+    "RCA": {
+      "dtype": "str",
+      "n_unique": 2,
+      "n_missing": 0,
+      "value_counts": {
+        "Normal": 189,
+        "Stenotic": 114
+      }
+    },
+    "Cath": {
+      "dtype": "str",
+      "n_unique": 2,
+      "n_missing": 0,
+      "value_counts": {
+        "CAD": 216,
+        "Normal": 87
+      }
+    }
+  },
+  "class_balance": {
+    "CAD": {
+      "column": "Cath",
+      "positive_label": "CAD",
+      "positive": 216,
+      "negative": 87,
+      "positive_rate": 0.7129
+    },
+    "LAD": {
+      "column": "LAD",
+      "positive_label": "Stenotic",
+      "positive": 177,
+      "negative": 126,
+      "positive_rate": 0.5842
+    },
+    "LCX": {
+      "column": "LCX",
+      "positive_label": "Stenotic",
+      "positive": 119,
+      "negative": 184,
+      "positive_rate": 0.3927
+    },
+    "RCA": {
+      "column": "RCA",
+      "positive_label": "Stenotic",
+      "positive": 114,
+      "negative": 189,
+      "positive_rate": 0.3762
+    }
+  },
+  "vessels_vs_cad": {
+    "cad_and_any_vessel": 216,
+    "cad_without_any_vessel": 0,
+    "any_vessel_without_cad": 1,
+    "patients_with_0_stenotic_vessels": 86,
+    "patients_with_1_stenotic_vessels": 87,
+    "patients_with_2_stenotic_vessels": 67,
+    "patients_with_3_stenotic_vessels": 63
+  }
+}
