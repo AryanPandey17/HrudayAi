@@ -46,13 +46,13 @@ models/                        *.joblib artifacts
 reports/                       metrics.json, data_audit.json, plots
 notebooks/                     EDA / comparison only
 docs/                          documentation (<= 6 pages), demo script
-Makefile                       setup, train, serve, test, lint, audit
+Makefile                       setup, audit, train, explain, serve, lint, format
 ```
 
 ## Phases
 
 - [x] **Phase 0 — Setup**: uv project, deps, ruff, pytest, Makefile, dataset audit.
-- [ ] **Phase 1 — Data + modeling**: feature schema, shared preprocessing, 4 targets x 4-5
+- [x] **Phase 1 — Data + modeling**: feature schema, shared preprocessing, 4 targets x 4-5
       candidates, held-out stratified test split + repeated stratified K-fold, class weights,
       calibration chosen by CV (Brier, reliability curves), selection by CV ROC-AUC with a
       simplicity tie-break, duplicate / leaky feature check, `make train` regenerates everything.

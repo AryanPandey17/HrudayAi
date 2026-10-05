@@ -105,7 +105,10 @@ def fit_with_calibrators(
 
 @dataclass
 class CalibratedModel:
-    """The artifact saved per target: base pipeline, calibrator and decision threshold."""
+    """The artifact saved per target: base pipeline, calibrator and decision threshold.
+
+    ``background`` is the preprocessed training matrix, kept as the SHAP reference data.
+    """
 
     target: str
     model_name: str
@@ -113,6 +116,7 @@ class CalibratedModel:
     pipeline: Pipeline
     calibrator: Calibrator
     threshold: float
+    background: pd.DataFrame
 
     def predict_proba(self, X: pd.DataFrame) -> np.ndarray:
         """Calibrated probability of the positive class."""

@@ -48,7 +48,6 @@ from ml.models import MODEL_LABELS
 from ml.schema import load_schema
 from ml.selection import select_calibration, select_model
 
-PLOTS_DIR = REPORTS_DIR / "plots"
 METRICS_PATH = REPORTS_DIR / "metrics.json"
 FEATURE_CHECKS_PATH = REPORTS_DIR / "feature_checks.json"
 MANIFEST_PATH = MODELS_DIR / "manifest.json"
@@ -113,7 +112,8 @@ def train_target(
 
     pipeline, calibrations = fit_with_calibrators(model_name, X_train, y_train, SEED)
     calibrator, threshold = calibrations[method].calibrator, calibrations[method].threshold
-    model = CalibratedModel(target, model_name, method, pipeline, calibrator, threshold)
+    background = pipeline[:-1].transform(X_train)
+    model = CalibratedModel(target, model_name, method, pipeline, calibrator, threshold, background)
     y_test = y.iloc[test].to_numpy()
     test_proba = model.predict_proba(X.iloc[test])
 
@@ -187,26 +187,28 @@ def _save_plots(results: dict[str, TargetResult]) -> None:
     for target, result in results.items():
         final, test = result.report["final"], result.report["test"]
         stem = target.lower()
-        plots.plot_roc(target, result.cv_calibrated, result.test, PLOTS_DIR / f"{stem}_roc.png")
+        plots.plot_roc(
+            target, result.cv_calibrated, result.test, plots.PLOTS_DIR / f"{stem}_roc.png"
+        )
         plots.plot_calibration(
             target,
             result.cv_uncalibrated,
             result.cv_calibrated,
             result.test,
             final["calibration"],
-            PLOTS_DIR / f"{stem}_calibration.png",
+            plots.PLOTS_DIR / f"{stem}_calibration.png",
         )
         plots.plot_confusion(
             target,
             test["confusion_at_selected_threshold"],
             final["threshold"],
-            PLOTS_DIR / f"{stem}_confusion.png",
+            plots.PLOTS_DIR / f"{stem}_confusion.png",
         )
     cv_auc = {
         target: {name: metrics["roc_auc"] for name, metrics in r.report["candidates_cv"].items()}
         for target, r in results.items()
     }
-    plots.plot_candidate_comparison(cv_auc, PLOTS_DIR / "cv_auc_comparison.png")
+    plots.plot_candidate_comparison(cv_auc, plots.PLOTS_DIR / "cv_auc_comparison.png")
 
 
 def _save_models(results: dict[str, TargetResult], test: np.ndarray) -> None:

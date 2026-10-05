@@ -8,10 +8,16 @@ matplotlib.use("Agg")
 
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
+import shap
 from sklearn.calibration import calibration_curve
 from sklearn.metrics import roc_auc_score, roc_curve
 
+from ml.config import REPORTS_DIR
 from ml.models import MODEL_LABELS
+
+PLOTS_DIR = REPORTS_DIR / "plots"
+SHAP_MAX_DISPLAY = 15
 
 CV_COLOR, TEST_COLOR, RAW_COLOR = "#2563eb", "#dc2626", "#9ca3af"
 Labelled = tuple[np.ndarray, np.ndarray]  # (y_true, probability)
@@ -100,4 +106,35 @@ def plot_candidate_comparison(cv_auc: dict[str, dict[str, dict[str, float]]], pa
         title="Candidate models - repeated stratified CV",
     )
     axis.legend(frameon=False, fontsize=8, ncol=3, loc="upper right")
+    _save(figure, path)
+
+
+def plot_shap_importance(target: str, importance: list[dict], path: Path) -> None:
+    """Global importance: mean |SHAP| of the top original features."""
+    top = importance[:SHAP_MAX_DISPLAY][::-1]
+    figure, axis = plt.subplots(figsize=(6.2, 5.2))
+    values = [item["mean_abs_shap"] for item in top]
+    axis.barh([item["label"] for item in top], values, color=CV_COLOR)
+    axis.set(xlabel="mean |SHAP| (log-odds)", title=f"{target} - global feature importance")
+    _save(figure, path)
+
+
+def plot_shap_summary(
+    target: str,
+    shap_values: pd.DataFrame,
+    feature_values: pd.DataFrame,
+    labels: dict[str, str],
+    path: Path,
+) -> None:
+    """SHAP beeswarm over the training rows, on original features."""
+    shap.summary_plot(
+        shap_values.to_numpy(),
+        features=feature_values[shap_values.columns].to_numpy(dtype=float),
+        feature_names=[labels[name] for name in shap_values.columns],
+        max_display=SHAP_MAX_DISPLAY,
+        show=False,
+        plot_size=(7.5, 5.6),
+    )
+    figure = plt.gcf()
+    figure.axes[0].set_title(f"{target} - SHAP summary (training rows)")
     _save(figure, path)
