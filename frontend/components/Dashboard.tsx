@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import { type DashboardData, useDashboardData } from "@/hooks/useDashboardData";
 import { usePrediction } from "@/hooks/usePrediction";
 import { fillPlaceholders, formFromExample, type FormState, formStatus } from "@/lib/form";
+import { APP_NAME } from "@/lib/config";
 import { reliabilityOf } from "@/lib/reliability";
 import { formatPercent, NEUTRAL_COLOR, riskColor } from "@/lib/risk";
 import type { ExamplePatient } from "@/lib/types";
@@ -158,7 +159,7 @@ export function Dashboard() {
         {state.status === "ready" && <Workspace data={state.data} />}
       </main>
       <footer className="border-t border-border px-4 py-4 text-center text-xs text-muted sm:px-6">
-        CardioVis 3D is a hackathon prototype for decision support and education. It is not a medical device, has not been
+        {APP_NAME} is a hackathon prototype for decision support and education. It is not a medical device, has not been
         clinically validated, and must not replace coronary angiography, CT or a clinician&apos;s judgement. Data:
         Z-Alizadeh Sani extension dataset (303 patients). Heart model: procedural, stylised geometry.
       </footer>

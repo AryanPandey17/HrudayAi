@@ -2,10 +2,12 @@ import type { Metadata } from "next";
 import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
 
+import { APP_NAME } from "@/lib/config";
+
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "CardioVis 3D - coronary risk explorer",
+  title: `${APP_NAME} - coronary risk explorer`,
   description:
     "Educational decision-support prototype: predicted CAD and LAD / LCX / RCA stenosis probabilities mapped onto an interactive 3D heart.",
 };

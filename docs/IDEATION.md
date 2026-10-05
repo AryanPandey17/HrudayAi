@@ -1,4 +1,4 @@
-# CardioVis 3D: product ideation
+# HrudayAI: product ideation
 
 Ideation only. Nothing in this document is implemented, and no code was changed to write it.
 
@@ -332,7 +332,7 @@ One story: **"an honest second opinion before angiography: what the available ev
 
 ## 6. Product narrative
 
-CardioVis 3D is a pre-angiography conversation tool, not a diagnosis machine. For a patient already being considered for coronary angiography, it takes whatever clinical, ECG, lab and echo findings are available and shows, on a 3D heart, the estimated chance of coronary disease overall and in each main artery. What sets it apart is that it shows its confidence as plainly as its estimate: arteries the model is unsure about look unsure, every probability comes with a range and the reasons behind it, and each estimate is set beside what actually happened to the most similar real patients in the data. It tells a clinic with only a stethoscope and an ECG what can and cannot be said, and what the next test would add. It is built on 303 patients from one centre and says so on every screen.
+HrudayAI is a pre-angiography conversation tool, not a diagnosis machine. For a patient already being considered for coronary angiography, it takes whatever clinical, ECG, lab and echo findings are available and shows, on a 3D heart, the estimated chance of coronary disease overall and in each main artery. What sets it apart is that it shows its confidence as plainly as its estimate: arteries the model is unsure about look unsure, every probability comes with a range and the reasons behind it, and each estimate is set beside what actually happened to the most similar real patients in the data. It tells a clinic with only a stethoscope and an ECG what can and cannot be said, and what the next test would add. It is built on 303 patients from one centre and says so on every screen.
 
 ---
 

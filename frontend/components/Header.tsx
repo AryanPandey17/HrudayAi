@@ -1,5 +1,7 @@
 "use client";
 
+import { APP_NAME, APP_TAGLINE } from "@/lib/config";
+
 type ApiStatus = "loading" | "ready" | "error";
 
 const STATUS_TEXT: Record<ApiStatus, string> = {
@@ -35,8 +37,8 @@ export function Header({ status }: { status: ApiStatus }) {
           <path d="M4.5 12.5h4l1.5-3 2.5 6 1.5-3h5.5" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
         <div>
-          <h1 className="text-base font-semibold leading-tight tracking-tight">CardioVis 3D</h1>
-          <p className="text-xs text-muted">Coronary artery disease risk explorer · educational prototype</p>
+          <h1 className="text-base font-semibold leading-tight tracking-tight">{APP_NAME}</h1>
+          <p className="text-xs text-muted">{APP_TAGLINE}</p>
         </div>
       </div>
       <div className="flex items-center gap-3 text-xs text-muted">
