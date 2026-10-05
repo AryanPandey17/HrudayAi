@@ -1,4 +1,4 @@
-.PHONY: setup audit train explain ladder serve web test lint format
+.PHONY: setup audit train explain ladder heart-model serve web test lint format
 
 BACKEND := backend
 FRONTEND := frontend
@@ -18,6 +18,11 @@ explain:  ## Regenerate only the SHAP reports from the saved models
 
 ladder:  ## Regenerate only the test-ladder models, reports/ladder_metrics.json and its plot
 	cd $(BACKEND) && uv run python -m ml.ladder
+
+heart-model:  ## Rebuild the 3D heart from BodyParts3D STL files: make heart-model STL_DIR=/path/to/stl
+	uv run --with trimesh --with fast-simplification --with numpy --with scipy --with networkx \
+		python tools/heart_model/build_heart_model.py $(STL_DIR)
+	cd $(FRONTEND)/public/models && npx --yes @gltf-transform/cli meshopt heart_raw.glb heart.glb && rm heart_raw.glb
 
 serve:  ## Run the API on http://localhost:8000 (Phase 3)
 	cd $(BACKEND) && uv run uvicorn api.main:app --reload --port 8000
