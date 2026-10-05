@@ -1,0 +1,1425 @@
+{
+  "meta": {
+    "seed": 42,
+    "model": "logistic_regression",
+    "calibration": "sigmoid",
+    "protocol": "same hold-out split, repeated stratified CV and in-fold threshold tuning as metrics.json",
+    "cv": {
+      "splits": 5,
+      "repeats": 5
+    },
+    "stage_gain_test": "Nadeau-Bengio corrected resampled t-test on paired fold ROC-AUCs",
+    "interval": "percentile interval over bootstrap refits of the stage's base model with its calibration map held fixed; reflects training-sample variability of the coefficients only",
+    "stages": [
+      {
+        "id": 1,
+        "key": "history_exam",
+        "label": "History + examination",
+        "groups": [
+          "demographics",
+          "exam"
+        ],
+        "n_features": 30
+      },
+      {
+        "id": 2,
+        "key": "ecg",
+        "label": "ECG",
+        "groups": [
+          "ecg"
+        ],
+        "n_features": 37
+      },
+      {
+        "id": 3,
+        "key": "labs",
+        "label": "Laboratory",
+        "groups": [
+          "lab"
+        ],
+        "n_features": 51
+      },
+      {
+        "id": 4,
+        "key": "echo",
+        "label": "Echocardiography",
+        "groups": [
+          "echo"
+        ],
+        "n_features": 54
+      }
+    ],
+    "last_stage_max_abs_diff_from_main_model": {
+      "CAD": 0.0,
+      "LAD": 0.0,
+      "LCX": 0.0,
+      "RCA": 0.0
+    }
+  },
+  "targets": {
+    "CAD": {
+      "stages": {
+        "1": {
+          "stage": 1,
+          "label": "History + examination",
+          "n_features": 30,
+          "threshold": 0.7086,
+          "regularisation_C": 0.3162,
+          "cv": {
+            "accuracy": {
+              "mean": 0.8538,
+              "std": 0.0527
+            },
+            "precision": {
+              "mean": 0.9241,
+              "std": 0.0373
+            },
+            "recall": {
+              "mean": 0.8675,
+              "std": 0.0756
+            },
+            "specificity": {
+              "mean": 0.82,
+              "std": 0.097
+            },
+            "f1": {
+              "mean": 0.8926,
+              "std": 0.042
+            },
+            "roc_auc": {
+              "mean": 0.9142,
+              "std": 0.0382
+            },
+            "brier": {
+              "mean": 0.095,
+              "std": 0.024
+            }
+          },
+          "test": {
+            "n": 61,
+            "n_positive": 44,
+            "roc_auc_ci95": [
+              0.7449,
+              0.9377
+            ],
+            "at_selected_threshold": {
+              "accuracy": 0.7377,
+              "precision": 0.9118,
+              "recall": 0.7045,
+              "specificity": 0.8235,
+              "f1": 0.7949,
+              "roc_auc": 0.8543,
+              "brier": 0.1687
+            },
+            "at_threshold_0.5": {
+              "accuracy": 0.7541,
+              "precision": 0.8718,
+              "recall": 0.7727,
+              "specificity": 0.7059,
+              "f1": 0.8193,
+              "roc_auc": 0.8543,
+              "brier": 0.1687
+            },
+            "confusion_at_selected_threshold": {
+              "tn": 14,
+              "fp": 3,
+              "fn": 13,
+              "tp": 31
+            }
+          },
+          "interval": {
+            "percentiles": [
+              10,
+              90
+            ],
+            "n_bootstrap": 200,
+            "mean_width_test": 0.1661,
+            "median_width_test": 0.1479,
+            "point_estimate_inside_rate_test": 1.0
+          },
+          "gain_vs_previous_stage": null
+        },
+        "2": {
+          "stage": 2,
+          "label": "ECG",
+          "n_features": 37,
+          "threshold": 0.7347,
+          "regularisation_C": 0.3162,
+          "cv": {
+            "accuracy": {
+              "mean": 0.8826,
+              "std": 0.0426
+            },
+            "precision": {
+              "mean": 0.9532,
+              "std": 0.031
+            },
+            "recall": {
+              "mean": 0.8792,
+              "std": 0.0583
+            },
+            "specificity": {
+              "mean": 0.8914,
+              "std": 0.0747
+            },
+            "f1": {
+              "mean": 0.9134,
+              "std": 0.0326
+            },
+            "roc_auc": {
+              "mean": 0.929,
+              "std": 0.0326
+            },
+            "brier": {
+              "mean": 0.0917,
+              "std": 0.0243
+            }
+          },
+          "test": {
+            "n": 61,
+            "n_positive": 44,
+            "roc_auc_ci95": [
+              0.7531,
+              0.9349
+            ],
+            "at_selected_threshold": {
+              "accuracy": 0.7705,
+              "precision": 0.9412,
+              "recall": 0.7273,
+              "specificity": 0.8824,
+              "f1": 0.8205,
+              "roc_auc": 0.8583,
+              "brier": 0.1537
+            },
+            "at_threshold_0.5": {
+              "accuracy": 0.7541,
+              "precision": 0.8537,
+              "recall": 0.7955,
+              "specificity": 0.6471,
+              "f1": 0.8235,
+              "roc_auc": 0.8583,
+              "brier": 0.1537
+            },
+            "confusion_at_selected_threshold": {
+              "tn": 15,
+              "fp": 2,
+              "fn": 12,
+              "tp": 32
+            }
+          },
+          "interval": {
+            "percentiles": [
+              10,
+              90
+            ],
+            "n_bootstrap": 200,
+            "mean_width_test": 0.1658,
+            "median_width_test": 0.1477,
+            "point_estimate_inside_rate_test": 1.0
+          },
+          "gain_vs_previous_stage": {
+            "mean_cv_auc_gain": 0.0148,
+            "p_value": 0.0644,
+            "distinguishable_from_noise": false
+          }
+        },
+        "3": {
+          "stage": 3,
+          "label": "Laboratory",
+          "n_features": 51,
+          "threshold": 0.5934,
+          "regularisation_C": 0.3162,
+          "cv": {
+            "accuracy": {
+              "mean": 0.8652,
+              "std": 0.0372
+            },
+            "precision": {
+              "mean": 0.9279,
+              "std": 0.0319
+            },
+            "recall": {
+              "mean": 0.8803,
+              "std": 0.0521
+            },
+            "specificity": {
+              "mean": 0.8286,
+              "std": 0.0825
+            },
+            "f1": {
+              "mean": 0.9022,
+              "std": 0.0289
+            },
+            "roc_auc": {
+              "mean": 0.9201,
+              "std": 0.0309
+            },
+            "brier": {
+              "mean": 0.1012,
+              "std": 0.0182
+            }
+          },
+          "test": {
+            "n": 61,
+            "n_positive": 44,
+            "roc_auc_ci95": [
+              0.7238,
+              0.9273
+            ],
+            "at_selected_threshold": {
+              "accuracy": 0.7541,
+              "precision": 0.8919,
+              "recall": 0.75,
+              "specificity": 0.7647,
+              "f1": 0.8148,
+              "roc_auc": 0.8369,
+              "brier": 0.1527
+            },
+            "at_threshold_0.5": {
+              "accuracy": 0.7377,
+              "precision": 0.85,
+              "recall": 0.7727,
+              "specificity": 0.6471,
+              "f1": 0.8095,
+              "roc_auc": 0.8369,
+              "brier": 0.1527
+            },
+            "confusion_at_selected_threshold": {
+              "tn": 13,
+              "fp": 4,
+              "fn": 11,
+              "tp": 33
+            }
+          },
+          "interval": {
+            "percentiles": [
+              10,
+              90
+            ],
+            "n_bootstrap": 200,
+            "mean_width_test": 0.2108,
+            "median_width_test": 0.2014,
+            "point_estimate_inside_rate_test": 1.0
+          },
+          "gain_vs_previous_stage": {
+            "mean_cv_auc_gain": -0.0089,
+            "p_value": 0.5101,
+            "distinguishable_from_noise": false
+          }
+        },
+        "4": {
+          "stage": 4,
+          "label": "Echocardiography",
+          "n_features": 54,
+          "threshold": 0.586,
+          "regularisation_C": 0.3162,
+          "cv": {
+            "accuracy": {
+              "mean": 0.8702,
+              "std": 0.0419
+            },
+            "precision": {
+              "mean": 0.9226,
+              "std": 0.0351
+            },
+            "recall": {
+              "mean": 0.8943,
+              "std": 0.0584
+            },
+            "specificity": {
+              "mean": 0.8114,
+              "std": 0.0919
+            },
+            "f1": {
+              "mean": 0.9067,
+              "std": 0.0321
+            },
+            "roc_auc": {
+              "mean": 0.9251,
+              "std": 0.0332
+            },
+            "brier": {
+              "mean": 0.0961,
+              "std": 0.0173
+            }
+          },
+          "test": {
+            "n": 61,
+            "n_positive": 44,
+            "roc_auc_ci95": [
+              0.7732,
+              0.9455
+            ],
+            "at_selected_threshold": {
+              "accuracy": 0.7869,
+              "precision": 0.8974,
+              "recall": 0.7955,
+              "specificity": 0.7647,
+              "f1": 0.8434,
+              "roc_auc": 0.8717,
+              "brier": 0.1432
+            },
+            "at_threshold_0.5": {
+              "accuracy": 0.8033,
+              "precision": 0.9,
+              "recall": 0.8182,
+              "specificity": 0.7647,
+              "f1": 0.8571,
+              "roc_auc": 0.8717,
+              "brier": 0.1432
+            },
+            "confusion_at_selected_threshold": {
+              "tn": 13,
+              "fp": 4,
+              "fn": 9,
+              "tp": 35
+            }
+          },
+          "interval": {
+            "percentiles": [
+              10,
+              90
+            ],
+            "n_bootstrap": 200,
+            "mean_width_test": 0.195,
+            "median_width_test": 0.1449,
+            "point_estimate_inside_rate_test": 1.0
+          },
+          "gain_vs_previous_stage": {
+            "mean_cv_auc_gain": 0.005,
+            "p_value": 0.5884,
+            "distinguishable_from_noise": false
+          }
+        }
+      },
+      "gain_last_vs_first_stage": {
+        "mean_cv_auc_gain": 0.0109,
+        "p_value": 0.5342,
+        "distinguishable_from_noise": false
+      }
+    },
+    "LAD": {
+      "stages": {
+        "1": {
+          "stage": 1,
+          "label": "History + examination",
+          "n_features": 30,
+          "threshold": 0.4571,
+          "regularisation_C": 1.0,
+          "cv": {
+            "accuracy": {
+              "mean": 0.7678,
+              "std": 0.0533
+            },
+            "precision": {
+              "mean": 0.7666,
+              "std": 0.0463
+            },
+            "recall": {
+              "mean": 0.8767,
+              "std": 0.0755
+            },
+            "specificity": {
+              "mean": 0.6105,
+              "std": 0.1035
+            },
+            "f1": {
+              "mean": 0.816,
+              "std": 0.0465
+            },
+            "roc_auc": {
+              "mean": 0.7918,
+              "std": 0.0579
+            },
+            "brier": {
+              "mean": 0.176,
+              "std": 0.0194
+            }
+          },
+          "test": {
+            "n": 61,
+            "n_positive": 34,
+            "roc_auc_ci95": [
+              0.6612,
+              0.8918
+            ],
+            "at_selected_threshold": {
+              "accuracy": 0.7541,
+              "precision": 0.7879,
+              "recall": 0.7647,
+              "specificity": 0.7407,
+              "f1": 0.7761,
+              "roc_auc": 0.7865,
+              "brier": 0.2025
+            },
+            "at_threshold_0.5": {
+              "accuracy": 0.7541,
+              "precision": 0.7879,
+              "recall": 0.7647,
+              "specificity": 0.7407,
+              "f1": 0.7761,
+              "roc_auc": 0.7865,
+              "brier": 0.2025
+            },
+            "confusion_at_selected_threshold": {
+              "tn": 20,
+              "fp": 7,
+              "fn": 8,
+              "tp": 26
+            }
+          },
+          "interval": {
+            "percentiles": [
+              10,
+              90
+            ],
+            "n_bootstrap": 200,
+            "mean_width_test": 0.2354,
+            "median_width_test": 0.2035,
+            "point_estimate_inside_rate_test": 1.0
+          },
+          "gain_vs_previous_stage": null
+        },
+        "2": {
+          "stage": 2,
+          "label": "ECG",
+          "n_features": 37,
+          "threshold": 0.4768,
+          "regularisation_C": 0.1,
+          "cv": {
+            "accuracy": {
+              "mean": 0.7818,
+              "std": 0.0353
+            },
+            "precision": {
+              "mean": 0.774,
+              "std": 0.0374
+            },
+            "recall": {
+              "mean": 0.8951,
+              "std": 0.0536
+            },
+            "specificity": {
+              "mean": 0.6183,
+              "std": 0.0862
+            },
+            "f1": {
+              "mean": 0.8287,
+              "std": 0.0288
+            },
+            "roc_auc": {
+              "mean": 0.7993,
+              "std": 0.052
+            },
+            "brier": {
+              "mean": 0.1712,
+              "std": 0.0177
+            }
+          },
+          "test": {
+            "n": 61,
+            "n_positive": 34,
+            "roc_auc_ci95": [
+              0.6405,
+              0.8785
+            ],
+            "at_selected_threshold": {
+              "accuracy": 0.7049,
+              "precision": 0.7222,
+              "recall": 0.7647,
+              "specificity": 0.6296,
+              "f1": 0.7429,
+              "roc_auc": 0.7723,
+              "brier": 0.1912
+            },
+            "at_threshold_0.5": {
+              "accuracy": 0.7049,
+              "precision": 0.7353,
+              "recall": 0.7353,
+              "specificity": 0.6667,
+              "f1": 0.7353,
+              "roc_auc": 0.7723,
+              "brier": 0.1912
+            },
+            "confusion_at_selected_threshold": {
+              "tn": 17,
+              "fp": 10,
+              "fn": 8,
+              "tp": 26
+            }
+          },
+          "interval": {
+            "percentiles": [
+              10,
+              90
+            ],
+            "n_bootstrap": 200,
+            "mean_width_test": 0.1618,
+            "median_width_test": 0.1606,
+            "point_estimate_inside_rate_test": 1.0
+          },
+          "gain_vs_previous_stage": {
+            "mean_cv_auc_gain": 0.0075,
+            "p_value": 0.655,
+            "distinguishable_from_noise": false
+          }
+        },
+        "3": {
+          "stage": 3,
+          "label": "Laboratory",
+          "n_features": 51,
+          "threshold": 0.4357,
+          "regularisation_C": 0.1,
+          "cv": {
+            "accuracy": {
+              "mean": 0.7495,
+              "std": 0.0596
+            },
+            "precision": {
+              "mean": 0.7689,
+              "std": 0.0499
+            },
+            "recall": {
+              "mean": 0.8277,
+              "std": 0.0919
+            },
+            "specificity": {
+              "mean": 0.6363,
+              "std": 0.1035
+            },
+            "f1": {
+              "mean": 0.7945,
+              "std": 0.0547
+            },
+            "roc_auc": {
+              "mean": 0.7969,
+              "std": 0.0555
+            },
+            "brier": {
+              "mean": 0.1869,
+              "std": 0.0254
+            }
+          },
+          "test": {
+            "n": 61,
+            "n_positive": 34,
+            "roc_auc_ci95": [
+              0.6441,
+              0.8804
+            ],
+            "at_selected_threshold": {
+              "accuracy": 0.7213,
+              "precision": 0.7429,
+              "recall": 0.7647,
+              "specificity": 0.6667,
+              "f1": 0.7536,
+              "roc_auc": 0.7767,
+              "brier": 0.2061
+            },
+            "at_threshold_0.5": {
+              "accuracy": 0.7049,
+              "precision": 0.7353,
+              "recall": 0.7353,
+              "specificity": 0.6667,
+              "f1": 0.7353,
+              "roc_auc": 0.7767,
+              "brier": 0.2061
+            },
+            "confusion_at_selected_threshold": {
+              "tn": 18,
+              "fp": 9,
+              "fn": 8,
+              "tp": 26
+            }
+          },
+          "interval": {
+            "percentiles": [
+              10,
+              90
+            ],
+            "n_bootstrap": 200,
+            "mean_width_test": 0.2736,
+            "median_width_test": 0.3047,
+            "point_estimate_inside_rate_test": 1.0
+          },
+          "gain_vs_previous_stage": {
+            "mean_cv_auc_gain": -0.0024,
+            "p_value": 0.8966,
+            "distinguishable_from_noise": false
+          }
+        },
+        "4": {
+          "stage": 4,
+          "label": "Echocardiography",
+          "n_features": 54,
+          "threshold": 0.4022,
+          "regularisation_C": 0.1,
+          "cv": {
+            "accuracy": {
+              "mean": 0.7246,
+              "std": 0.0589
+            },
+            "precision": {
+              "mean": 0.7902,
+              "std": 0.0613
+            },
+            "recall": {
+              "mean": 0.7399,
+              "std": 0.1239
+            },
+            "specificity": {
+              "mean": 0.7025,
+              "std": 0.1434
+            },
+            "f1": {
+              "mean": 0.7565,
+              "std": 0.0659
+            },
+            "roc_auc": {
+              "mean": 0.8371,
+              "std": 0.0555
+            },
+            "brier": {
+              "mean": 0.1707,
+              "std": 0.0296
+            }
+          },
+          "test": {
+            "n": 61,
+            "n_positive": 34,
+            "roc_auc_ci95": [
+              0.7026,
+              0.9075
+            ],
+            "at_selected_threshold": {
+              "accuracy": 0.7049,
+              "precision": 0.7,
+              "recall": 0.8235,
+              "specificity": 0.5556,
+              "f1": 0.7568,
+              "roc_auc": 0.8181,
+              "brier": 0.1866
+            },
+            "at_threshold_0.5": {
+              "accuracy": 0.7377,
+              "precision": 0.75,
+              "recall": 0.7941,
+              "specificity": 0.6667,
+              "f1": 0.7714,
+              "roc_auc": 0.8181,
+              "brier": 0.1866
+            },
+            "confusion_at_selected_threshold": {
+              "tn": 15,
+              "fp": 12,
+              "fn": 6,
+              "tp": 28
+            }
+          },
+          "interval": {
+            "percentiles": [
+              10,
+              90
+            ],
+            "n_bootstrap": 200,
+            "mean_width_test": 0.2347,
+            "median_width_test": 0.244,
+            "point_estimate_inside_rate_test": 1.0
+          },
+          "gain_vs_previous_stage": {
+            "mean_cv_auc_gain": 0.0401,
+            "p_value": 0.0105,
+            "distinguishable_from_noise": true
+          }
+        }
+      },
+      "gain_last_vs_first_stage": {
+        "mean_cv_auc_gain": 0.0452,
+        "p_value": 0.1131,
+        "distinguishable_from_noise": false
+      }
+    },
+    "LCX": {
+      "stages": {
+        "1": {
+          "stage": 1,
+          "label": "History + examination",
+          "n_features": 30,
+          "threshold": 0.3767,
+          "regularisation_C": 0.3162,
+          "cv": {
+            "accuracy": {
+              "mean": 0.6544,
+              "std": 0.066
+            },
+            "precision": {
+              "mean": 0.5405,
+              "std": 0.0707
+            },
+            "recall": {
+              "mean": 0.7001,
+              "std": 0.1228
+            },
+            "specificity": {
+              "mean": 0.6267,
+              "std": 0.105
+            },
+            "f1": {
+              "mean": 0.6045,
+              "std": 0.0725
+            },
+            "roc_auc": {
+              "mean": 0.717,
+              "std": 0.0726
+            },
+            "brier": {
+              "mean": 0.2107,
+              "std": 0.022
+            }
+          },
+          "test": {
+            "n": 61,
+            "n_positive": 27,
+            "roc_auc_ci95": [
+              0.6142,
+              0.8683
+            ],
+            "at_selected_threshold": {
+              "accuracy": 0.7213,
+              "precision": 0.6923,
+              "recall": 0.6667,
+              "specificity": 0.7647,
+              "f1": 0.6792,
+              "roc_auc": 0.7473,
+              "brier": 0.2103
+            },
+            "at_threshold_0.5": {
+              "accuracy": 0.6885,
+              "precision": 0.7,
+              "recall": 0.5185,
+              "specificity": 0.8235,
+              "f1": 0.5957,
+              "roc_auc": 0.7473,
+              "brier": 0.2103
+            },
+            "confusion_at_selected_threshold": {
+              "tn": 26,
+              "fp": 8,
+              "fn": 9,
+              "tp": 18
+            }
+          },
+          "interval": {
+            "percentiles": [
+              10,
+              90
+            ],
+            "n_bootstrap": 200,
+            "mean_width_test": 0.2229,
+            "median_width_test": 0.2062,
+            "point_estimate_inside_rate_test": 1.0
+          },
+          "gain_vs_previous_stage": null
+        },
+        "2": {
+          "stage": 2,
+          "label": "ECG",
+          "n_features": 37,
+          "threshold": 0.3844,
+          "regularisation_C": 0.1,
+          "cv": {
+            "accuracy": {
+              "mean": 0.6212,
+              "std": 0.0944
+            },
+            "precision": {
+              "mean": 0.5156,
+              "std": 0.0781
+            },
+            "recall": {
+              "mean": 0.7043,
+              "std": 0.1385
+            },
+            "specificity": {
+              "mean": 0.5707,
+              "std": 0.1935
+            },
+            "f1": {
+              "mean": 0.5862,
+              "std": 0.0675
+            },
+            "roc_auc": {
+              "mean": 0.7053,
+              "std": 0.0705
+            },
+            "brier": {
+              "mean": 0.2156,
+              "std": 0.0149
+            }
+          },
+          "test": {
+            "n": 61,
+            "n_positive": 27,
+            "roc_auc_ci95": [
+              0.5966,
+              0.8527
+            ],
+            "at_selected_threshold": {
+              "accuracy": 0.7049,
+              "precision": 0.6667,
+              "recall": 0.6667,
+              "specificity": 0.7353,
+              "f1": 0.6667,
+              "roc_auc": 0.7331,
+              "brier": 0.2168
+            },
+            "at_threshold_0.5": {
+              "accuracy": 0.6066,
+              "precision": 0.6,
+              "recall": 0.3333,
+              "specificity": 0.8235,
+              "f1": 0.4286,
+              "roc_auc": 0.7331,
+              "brier": 0.2168
+            },
+            "confusion_at_selected_threshold": {
+              "tn": 25,
+              "fp": 9,
+              "fn": 9,
+              "tp": 18
+            }
+          },
+          "interval": {
+            "percentiles": [
+              10,
+              90
+            ],
+            "n_bootstrap": 200,
+            "mean_width_test": 0.1639,
+            "median_width_test": 0.1603,
+            "point_estimate_inside_rate_test": 1.0
+          },
+          "gain_vs_previous_stage": {
+            "mean_cv_auc_gain": -0.0116,
+            "p_value": 0.2998,
+            "distinguishable_from_noise": false
+          }
+        },
+        "3": {
+          "stage": 3,
+          "label": "Laboratory",
+          "n_features": 51,
+          "threshold": 0.4588,
+          "regularisation_C": 0.01,
+          "cv": {
+            "accuracy": {
+              "mean": 0.6596,
+              "std": 0.0603
+            },
+            "precision": {
+              "mean": 0.5518,
+              "std": 0.0692
+            },
+            "recall": {
+              "mean": 0.6549,
+              "std": 0.1438
+            },
+            "specificity": {
+              "mean": 0.6627,
+              "std": 0.1285
+            },
+            "f1": {
+              "mean": 0.5902,
+              "std": 0.0706
+            },
+            "roc_auc": {
+              "mean": 0.7218,
+              "std": 0.0636
+            },
+            "brier": {
+              "mean": 0.2153,
+              "std": 0.0202
+            }
+          },
+          "test": {
+            "n": 61,
+            "n_positive": 27,
+            "roc_auc_ci95": [
+              0.5216,
+              0.8052
+            ],
+            "at_selected_threshold": {
+              "accuracy": 0.6721,
+              "precision": 0.7059,
+              "recall": 0.4444,
+              "specificity": 0.8529,
+              "f1": 0.5455,
+              "roc_auc": 0.6743,
+              "brier": 0.2239
+            },
+            "at_threshold_0.5": {
+              "accuracy": 0.6885,
+              "precision": 0.7857,
+              "recall": 0.4074,
+              "specificity": 0.9118,
+              "f1": 0.5366,
+              "roc_auc": 0.6743,
+              "brier": 0.2239
+            },
+            "confusion_at_selected_threshold": {
+              "tn": 29,
+              "fp": 5,
+              "fn": 15,
+              "tp": 12
+            }
+          },
+          "interval": {
+            "percentiles": [
+              10,
+              90
+            ],
+            "n_bootstrap": 200,
+            "mean_width_test": 0.1307,
+            "median_width_test": 0.1285,
+            "point_estimate_inside_rate_test": 1.0
+          },
+          "gain_vs_previous_stage": {
+            "mean_cv_auc_gain": 0.0164,
+            "p_value": 0.6118,
+            "distinguishable_from_noise": false
+          }
+        },
+        "4": {
+          "stage": 4,
+          "label": "Echocardiography",
+          "n_features": 54,
+          "threshold": 0.3856,
+          "regularisation_C": 0.01,
+          "cv": {
+            "accuracy": {
+              "mean": 0.6604,
+              "std": 0.0537
+            },
+            "precision": {
+              "mean": 0.5478,
+              "std": 0.0677
+            },
+            "recall": {
+              "mean": 0.678,
+              "std": 0.112
+            },
+            "specificity": {
+              "mean": 0.6493,
+              "std": 0.0953
+            },
+            "f1": {
+              "mean": 0.6012,
+              "std": 0.0637
+            },
+            "roc_auc": {
+              "mean": 0.7156,
+              "std": 0.064
+            },
+            "brier": {
+              "mean": 0.2217,
+              "std": 0.0198
+            }
+          },
+          "test": {
+            "n": 61,
+            "n_positive": 27,
+            "roc_auc_ci95": [
+              0.5357,
+              0.8161
+            ],
+            "at_selected_threshold": {
+              "accuracy": 0.6393,
+              "precision": 0.6,
+              "recall": 0.5556,
+              "specificity": 0.7059,
+              "f1": 0.5769,
+              "roc_auc": 0.6863,
+              "brier": 0.2221
+            },
+            "at_threshold_0.5": {
+              "accuracy": 0.6721,
+              "precision": 0.7333,
+              "recall": 0.4074,
+              "specificity": 0.8824,
+              "f1": 0.5238,
+              "roc_auc": 0.6863,
+              "brier": 0.2221
+            },
+            "confusion_at_selected_threshold": {
+              "tn": 24,
+              "fp": 10,
+              "fn": 12,
+              "tp": 15
+            }
+          },
+          "interval": {
+            "percentiles": [
+              10,
+              90
+            ],
+            "n_bootstrap": 200,
+            "mean_width_test": 0.1215,
+            "median_width_test": 0.1131,
+            "point_estimate_inside_rate_test": 1.0
+          },
+          "gain_vs_previous_stage": {
+            "mean_cv_auc_gain": -0.0062,
+            "p_value": 0.5331,
+            "distinguishable_from_noise": false
+          }
+        }
+      },
+      "gain_last_vs_first_stage": {
+        "mean_cv_auc_gain": -0.0014,
+        "p_value": 0.9685,
+        "distinguishable_from_noise": false
+      }
+    },
+    "RCA": {
+      "stages": {
+        "1": {
+          "stage": 1,
+          "label": "History + examination",
+          "n_features": 30,
+          "threshold": 0.3365,
+          "regularisation_C": 1.0,
+          "cv": {
+            "accuracy": {
+              "mean": 0.6107,
+              "std": 0.0794
+            },
+            "precision": {
+              "mean": 0.5018,
+              "std": 0.067
+            },
+            "recall": {
+              "mean": 0.8115,
+              "std": 0.1242
+            },
+            "specificity": {
+              "mean": 0.488,
+              "std": 0.1536
+            },
+            "f1": {
+              "mean": 0.6133,
+              "std": 0.0581
+            },
+            "roc_auc": {
+              "mean": 0.7301,
+              "std": 0.0695
+            },
+            "brier": {
+              "mean": 0.2035,
+              "std": 0.0231
+            }
+          },
+          "test": {
+            "n": 61,
+            "n_positive": 22,
+            "roc_auc_ci95": [
+              0.5542,
+              0.8357
+            ],
+            "at_selected_threshold": {
+              "accuracy": 0.623,
+              "precision": 0.4839,
+              "recall": 0.6818,
+              "specificity": 0.5897,
+              "f1": 0.566,
+              "roc_auc": 0.7051,
+              "brier": 0.2078
+            },
+            "at_threshold_0.5": {
+              "accuracy": 0.6721,
+              "precision": 0.5556,
+              "recall": 0.4545,
+              "specificity": 0.7949,
+              "f1": 0.5,
+              "roc_auc": 0.7051,
+              "brier": 0.2078
+            },
+            "confusion_at_selected_threshold": {
+              "tn": 23,
+              "fp": 16,
+              "fn": 7,
+              "tp": 15
+            }
+          },
+          "interval": {
+            "percentiles": [
+              10,
+              90
+            ],
+            "n_bootstrap": 200,
+            "mean_width_test": 0.22,
+            "median_width_test": 0.2163,
+            "point_estimate_inside_rate_test": 1.0
+          },
+          "gain_vs_previous_stage": null
+        },
+        "2": {
+          "stage": 2,
+          "label": "ECG",
+          "n_features": 37,
+          "threshold": 0.3026,
+          "regularisation_C": 0.3162,
+          "cv": {
+            "accuracy": {
+              "mean": 0.609,
+              "std": 0.0729
+            },
+            "precision": {
+              "mean": 0.5041,
+              "std": 0.074
+            },
+            "recall": {
+              "mean": 0.7963,
+              "std": 0.1669
+            },
+            "specificity": {
+              "mean": 0.4947,
+              "std": 0.176
+            },
+            "f1": {
+              "mean": 0.6043,
+              "std": 0.0638
+            },
+            "roc_auc": {
+              "mean": 0.7233,
+              "std": 0.0682
+            },
+            "brier": {
+              "mean": 0.2061,
+              "std": 0.0201
+            }
+          },
+          "test": {
+            "n": 61,
+            "n_positive": 22,
+            "roc_auc_ci95": [
+              0.5487,
+              0.8281
+            ],
+            "at_selected_threshold": {
+              "accuracy": 0.5902,
+              "precision": 0.4545,
+              "recall": 0.6818,
+              "specificity": 0.5385,
+              "f1": 0.5455,
+              "roc_auc": 0.6958,
+              "brier": 0.2075
+            },
+            "at_threshold_0.5": {
+              "accuracy": 0.7049,
+              "precision": 0.6111,
+              "recall": 0.5,
+              "specificity": 0.8205,
+              "f1": 0.55,
+              "roc_auc": 0.6958,
+              "brier": 0.2075
+            },
+            "confusion_at_selected_threshold": {
+              "tn": 21,
+              "fp": 18,
+              "fn": 7,
+              "tp": 15
+            }
+          },
+          "interval": {
+            "percentiles": [
+              10,
+              90
+            ],
+            "n_bootstrap": 200,
+            "mean_width_test": 0.1892,
+            "median_width_test": 0.18,
+            "point_estimate_inside_rate_test": 1.0
+          },
+          "gain_vs_previous_stage": {
+            "mean_cv_auc_gain": -0.0068,
+            "p_value": 0.5838,
+            "distinguishable_from_noise": false
+          }
+        },
+        "3": {
+          "stage": 3,
+          "label": "Laboratory",
+          "n_features": 51,
+          "threshold": 0.3217,
+          "regularisation_C": 0.1,
+          "cv": {
+            "accuracy": {
+              "mean": 0.6371,
+              "std": 0.0869
+            },
+            "precision": {
+              "mean": 0.5277,
+              "std": 0.0841
+            },
+            "recall": {
+              "mean": 0.777,
+              "std": 0.1307
+            },
+            "specificity": {
+              "mean": 0.552,
+              "std": 0.1645
+            },
+            "f1": {
+              "mean": 0.6204,
+              "std": 0.0706
+            },
+            "roc_auc": {
+              "mean": 0.7458,
+              "std": 0.0791
+            },
+            "brier": {
+              "mean": 0.206,
+              "std": 0.022
+            }
+          },
+          "test": {
+            "n": 61,
+            "n_positive": 22,
+            "roc_auc_ci95": [
+              0.5428,
+              0.8196
+            ],
+            "at_selected_threshold": {
+              "accuracy": 0.541,
+              "precision": 0.4167,
+              "recall": 0.6818,
+              "specificity": 0.4615,
+              "f1": 0.5172,
+              "roc_auc": 0.6865,
+              "brier": 0.2108
+            },
+            "at_threshold_0.5": {
+              "accuracy": 0.6393,
+              "precision": 0.5,
+              "recall": 0.3636,
+              "specificity": 0.7949,
+              "f1": 0.4211,
+              "roc_auc": 0.6865,
+              "brier": 0.2108
+            },
+            "confusion_at_selected_threshold": {
+              "tn": 18,
+              "fp": 21,
+              "fn": 7,
+              "tp": 15
+            }
+          },
+          "interval": {
+            "percentiles": [
+              10,
+              90
+            ],
+            "n_bootstrap": 200,
+            "mean_width_test": 0.2103,
+            "median_width_test": 0.209,
+            "point_estimate_inside_rate_test": 1.0
+          },
+          "gain_vs_previous_stage": {
+            "mean_cv_auc_gain": 0.0225,
+            "p_value": 0.4712,
+            "distinguishable_from_noise": false
+          }
+        },
+        "4": {
+          "stage": 4,
+          "label": "Echocardiography",
+          "n_features": 54,
+          "threshold": 0.3571,
+          "regularisation_C": 0.1,
+          "cv": {
+            "accuracy": {
+              "mean": 0.6601,
+              "std": 0.0838
+            },
+            "precision": {
+              "mean": 0.5448,
+              "std": 0.0892
+            },
+            "recall": {
+              "mean": 0.7503,
+              "std": 0.1511
+            },
+            "specificity": {
+              "mean": 0.6053,
+              "std": 0.1514
+            },
+            "f1": {
+              "mean": 0.6241,
+              "std": 0.0953
+            },
+            "roc_auc": {
+              "mean": 0.7399,
+              "std": 0.0741
+            },
+            "brier": {
+              "mean": 0.2045,
+              "std": 0.0213
+            }
+          },
+          "test": {
+            "n": 61,
+            "n_positive": 22,
+            "roc_auc_ci95": [
+              0.5229,
+              0.806
+            ],
+            "at_selected_threshold": {
+              "accuracy": 0.5738,
+              "precision": 0.4412,
+              "recall": 0.6818,
+              "specificity": 0.5128,
+              "f1": 0.5357,
+              "roc_auc": 0.6713,
+              "brier": 0.2157
+            },
+            "at_threshold_0.5": {
+              "accuracy": 0.6393,
+              "precision": 0.5,
+              "recall": 0.4091,
+              "specificity": 0.7692,
+              "f1": 0.45,
+              "roc_auc": 0.6713,
+              "brier": 0.2157
+            },
+            "confusion_at_selected_threshold": {
+              "tn": 20,
+              "fp": 19,
+              "fn": 7,
+              "tp": 15
+            }
+          },
+          "interval": {
+            "percentiles": [
+              10,
+              90
+            ],
+            "n_bootstrap": 200,
+            "mean_width_test": 0.2302,
+            "median_width_test": 0.2258,
+            "point_estimate_inside_rate_test": 1.0
+          },
+          "gain_vs_previous_stage": {
+            "mean_cv_auc_gain": -0.006,
+            "p_value": 0.5591,
+            "distinguishable_from_noise": false
+          }
+        }
+      },
+      "gain_last_vs_first_stage": {
+        "mean_cv_auc_gain": 0.0098,
+        "p_value": 0.7776,
+        "distinguishable_from_noise": false
+      }
+    }
+  }
+}
