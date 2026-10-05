@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# Node
+node_modules/
+.next/
+out/
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+
+# Data: the converted .xlsx in data/raw is tracked; the original Numbers file is not
+*.numbers
+data/processed/
+
+# Env
+.env
+.env.local
