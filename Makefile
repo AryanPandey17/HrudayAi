@@ -1,4 +1,4 @@
-.PHONY: setup audit train serve test lint format
+.PHONY: setup audit train explain serve lint format
 
 BACKEND := backend
 
@@ -8,14 +8,14 @@ setup:  ## Install backend dependencies from the lockfile
 audit:  ## Dataset audit -> reports/data_audit.json
 	cd $(BACKEND) && uv run python -m ml.audit
 
-train:  ## Regenerate models/, reports/metrics.json and plots (Phase 1)
-	cd $(BACKEND) && uv run python -m ml.train
+train:  ## Regenerate models/, reports/metrics.json, plots and SHAP reports
+	cd $(BACKEND) && uv run python -m ml.train && uv run python -m ml.explain
+
+explain:  ## Regenerate only the SHAP reports from the saved models
+	cd $(BACKEND) && uv run python -m ml.explain
 
 serve:  ## Run the API on http://localhost:8000 (Phase 3)
 	cd $(BACKEND) && uv run uvicorn api.main:app --reload --port 8000
-
-test:  ## Run the backend test suite
-	cd $(BACKEND) && uv run pytest
 
 lint:  ## Lint and check formatting
 	cd $(BACKEND) && uv run ruff check . && uv run ruff format --check .
