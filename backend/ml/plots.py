@@ -138,3 +138,28 @@ def plot_shap_summary(
     figure = plt.gcf()
     figure.axes[0].set_title(f"{target} - SHAP summary (training rows)")
     _save(figure, path)
+
+
+def plot_ladder_auc(targets: dict[str, dict], path: Path) -> None:
+    """ROC-AUC per ladder stage and target: CV mean ± std (line) and hold-out value (marker)."""
+    figure, axes = plt.subplots(1, len(targets), figsize=(3.1 * len(targets), 3.6), sharey=True)
+    for axis, (target, report) in zip(axes, targets.items(), strict=True):
+        stages = list(report["stages"].values())
+        ids = [stage["stage"] for stage in stages]
+        mean = np.array([stage["cv"]["roc_auc"]["mean"] for stage in stages])
+        std = np.array([stage["cv"]["roc_auc"]["std"] for stage in stages])
+        held_out = [stage["test"]["at_selected_threshold"]["roc_auc"] for stage in stages]
+        axis.fill_between(ids, mean - std, mean + std, color=CV_COLOR, alpha=0.15, lw=0)
+        axis.plot(ids, mean, color=CV_COLOR, marker="o", lw=2, label="CV mean ± std")
+        axis.plot(ids, held_out, color=TEST_COLOR, marker="s", ls="--", lw=1.2, label="Hold-out")
+        axis.axhline(0.5, color=RAW_COLOR, ls=":", lw=1)
+        axis.set(title=target, xticks=ids, ylim=(0.45, 1.0), xlabel="Stage")
+        axis.set_xticklabels(
+            [stage["label"].replace(" + ", "\n+ ") for stage in stages], fontsize=7
+        )
+    axes[0].set_ylabel("ROC-AUC")
+    axes[0].legend(loc="lower right", frameon=False, fontsize=8)
+    figure.suptitle(
+        "Test ladder - discrimination as tests are added (stages are cumulative)", fontsize=10
+    )
+    _save(figure, path)

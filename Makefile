@@ -1,4 +1,4 @@
-.PHONY: setup audit train explain serve web test lint format
+.PHONY: setup audit train explain ladder serve web test lint format
 
 BACKEND := backend
 FRONTEND := frontend
@@ -10,11 +10,14 @@ setup:  ## Install backend and frontend dependencies from their lockfiles
 audit:  ## Dataset audit -> reports/data_audit.json
 	cd $(BACKEND) && uv run python -m ml.audit
 
-train:  ## Regenerate models/, reports/metrics.json, plots and SHAP reports
-	cd $(BACKEND) && uv run python -m ml.train && uv run python -m ml.explain
+train:  ## Regenerate everything: main models, metrics, plots, SHAP reports and the test ladder
+	cd $(BACKEND) && uv run python -m ml.train && uv run python -m ml.explain && uv run python -m ml.ladder
 
 explain:  ## Regenerate only the SHAP reports from the saved models
 	cd $(BACKEND) && uv run python -m ml.explain
+
+ladder:  ## Regenerate only the test-ladder models, reports/ladder_metrics.json and its plot
+	cd $(BACKEND) && uv run python -m ml.ladder
 
 serve:  ## Run the API on http://localhost:8000 (Phase 3)
 	cd $(BACKEND) && uv run uvicorn api.main:app --reload --port 8000
