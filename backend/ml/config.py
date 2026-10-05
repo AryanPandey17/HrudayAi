@@ -11,6 +11,12 @@ REPORTS_DIR = REPO_ROOT / "reports"
 SEED = 42
 EXPECTED_ROWS = 303
 
+# Validation design: one stratified hold-out, repeated stratified K-fold on the rest.
+TEST_FRACTION = 0.2
+CV_SPLITS = 5
+CV_REPEATS = 5
+CALIBRATION_SPLITS = 5
+
 
 @dataclass(frozen=True)
 class TargetSpec:
