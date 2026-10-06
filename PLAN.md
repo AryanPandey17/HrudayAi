@@ -81,7 +81,7 @@ Makefile                       setup, audit, train, explain, serve, lint, format
       review dialog.
 - [x] **Phase 8 — Better 3D heart**: BodyParts3D anatomy (CC BY-SA 2.1 JP) with the real
       LAD / LCX / RCA meshes; see `tools/heart_model/`.
-- [ ] **Docs + polish** (deferred from round one): README, docs, demo script, fresh-clone check.
+- [x] **Docs + polish** (deferred from round one): README, docs, demo script, fresh-clone check.
 
 Each phase ends with real command output and a stop for review.
 

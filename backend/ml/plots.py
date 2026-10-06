@@ -153,10 +153,9 @@ def plot_ladder_auc(targets: dict[str, dict], path: Path) -> None:
         axis.plot(ids, mean, color=CV_COLOR, marker="o", lw=2, label="CV mean ± std")
         axis.plot(ids, held_out, color=TEST_COLOR, marker="s", ls="--", lw=1.2, label="Hold-out")
         axis.axhline(0.5, color=RAW_COLOR, ls=":", lw=1)
-        axis.set(title=target, xticks=ids, ylim=(0.45, 1.0), xlabel="Stage")
-        axis.set_xticklabels(
-            [stage["label"].replace(" + ", "\n+ ") for stage in stages], fontsize=7
-        )
+        axis.set(title=target, xticks=ids, ylim=(0.45, 1.0))
+        labels = [stage["label"].replace(" + ", "\n+ ") for stage in stages]
+        axis.set_xticklabels(labels, fontsize=7, rotation=25, ha="right", rotation_mode="anchor")
     axes[0].set_ylabel("ROC-AUC")
     axes[0].legend(loc="lower right", frameon=False, fontsize=8)
     figure.suptitle(

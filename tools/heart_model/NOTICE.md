@@ -25,7 +25,7 @@
 ## Changes made
 
 Meshes were merged per structure, cropped to the region around the heart, simplified
-(about 487,000 source triangles to about 75,000), re-centred, rescaled, converted to glTF and
+(about 590,000 source triangles to about 75,000), re-centred, rescaled, converted to glTF and
 compressed with meshopt. `build_heart_model.py` in this folder reproduces every step.
 
 Because the source is share-alike, `heart.glb` is distributed under the same CC BY-SA 2.1 JP
