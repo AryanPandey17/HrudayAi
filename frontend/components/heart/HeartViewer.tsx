@@ -10,7 +10,6 @@ import { Toggle } from "@/components/ui/toggle";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import type { ThemeTokens } from "@/hooks/useThemeTokens";
-import { HEART_MODEL_CREDIT } from "@/lib/config";
 import { VESSELS } from "@/lib/heart/anatomy";
 import type { RiskBand } from "@/lib/types";
 
@@ -52,7 +51,7 @@ export function HeartViewer({ vessels, tokens, bands, selected, onSelectVessel, 
 
   return (
     <section className="flex h-full min-h-0 flex-col" aria-label="3D heart viewer">
-      <div className="flex shrink-0 flex-wrap items-center justify-between gap-2 border-b px-3 py-2">
+      <div className="flex shrink-0 flex-wrap items-center justify-between gap-2 border-b px-5 py-3">
         <ToggleGroup type="multiple" variant="outline" size="sm" value={shown} onValueChange={setShown} aria-label="Vessels shown">
           {drawable.map(({ id, name }) => (
             <ToggleGroupItem key={id} value={id} aria-label={`Show ${name}`}>
@@ -100,15 +99,13 @@ export function HeartViewer({ vessels, tokens, bands, selected, onSelectVessel, 
                 <span className="font-medium text-foreground">{focus.id}</span> · {focus.name} · supplies the {focus.territory}
               </>
             ) : (
-              "Drag to rotate, scroll to zoom, right-drag to pan, click a vessel to inspect it"
+              "Drag to rotate, scroll to zoom, click a vessel"
             )}
           </p>
-          <p className="rounded-md bg-background/90 px-2 py-1">
-            {HEART_MODEL_CREDIT}. <span className="hidden sm:inline">Reference anatomy, not this patient&apos;s imaging.</span>
-          </p>
+          <p className="rounded-md bg-background/90 px-2 py-1">Reference anatomy, not patient imaging</p>
         </div>
       </div>
-      <div className="shrink-0 border-t px-4 py-3">
+      <div className="shrink-0 border-t px-5 py-3">
         <RiskLegend bands={bands} steps={tokens.risk} idleColor={tokens.vesselIdle} />
       </div>
     </section>

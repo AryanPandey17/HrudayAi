@@ -32,6 +32,10 @@ const FADED_WIDTH = 0.5;
 const MIN_OPACITY = 0.55;
 const LOWER_RELIABILITY_OPACITY = 0.7;
 
+// Each zone is a card on the muted page; the resize handles are the gaps between them.
+const ZONE_CARD = "overflow-hidden rounded-xl border bg-card shadow-xs";
+const ZONE_GAP = "w-4 bg-transparent";
+
 function vesselOpacity(prediction: TargetPrediction): number {
   const width = prediction.interval.high - prediction.interval.low;
   const fade = Math.min(1, Math.max(0, (width - SOLID_WIDTH) / (FADED_WIDTH - SOLID_WIDTH)));
@@ -145,7 +149,6 @@ function Workspace({ data }: { data: DashboardData }) {
     <ResultsPanel
       targets={schema.targets}
       bands={schema.risk_bands}
-      stages={ladder.stages}
       ladder={ladder}
       metrics={metrics}
       groups={schema.groups}
@@ -166,16 +169,16 @@ function Workspace({ data }: { data: DashboardData }) {
 
   if (isDesktop) {
     return (
-      <ResizablePanelGroup orientation="horizontal">
-        <ResizablePanel defaultSize="27%" minSize="20%" collapsible>
+      <ResizablePanelGroup orientation="horizontal" className="p-4">
+        <ResizablePanel defaultSize="24%" minSize="18%" collapsible className={ZONE_CARD}>
           {patient}
         </ResizablePanel>
-        <ResizableHandle withHandle />
-        <ResizablePanel defaultSize="41%" minSize="26%">
+        <ResizableHandle className={ZONE_GAP} />
+        <ResizablePanel defaultSize="48%" minSize="28%" className={ZONE_CARD}>
           {viewer}
         </ResizablePanel>
-        <ResizableHandle withHandle />
-        <ResizablePanel defaultSize="32%" minSize="24%" collapsible>
+        <ResizableHandle className={ZONE_GAP} />
+        <ResizablePanel defaultSize="28%" minSize="22%" collapsible className={ZONE_CARD}>
           {results}
         </ResizablePanel>
       </ResizablePanelGroup>
@@ -183,7 +186,7 @@ function Workspace({ data }: { data: DashboardData }) {
   }
   const overallEstimate = current?.[overall.name];
   return (
-    <div className="flex h-full min-h-0 flex-col">
+    <div className="flex h-full min-h-0 flex-col bg-card">
       <div className="min-h-0 flex-1">{viewer}</div>
       <div className="grid shrink-0 grid-cols-2 gap-2 border-t p-2">
         <Sheet>
@@ -192,7 +195,7 @@ function Workspace({ data }: { data: DashboardData }) {
               <ClipboardList /> Patient
             </Button>
           </SheetTrigger>
-          <SheetContent side="left" className="w-full gap-0 p-0 sm:max-w-md">
+          <SheetContent side="left" className="w-full gap-0 bg-card p-0 sm:max-w-md">
             <SheetHeader className="sr-only">
               <SheetTitle>Patient</SheetTitle>
               <SheetDescription>Example patients and the test ladder</SheetDescription>
@@ -204,7 +207,7 @@ function Workspace({ data }: { data: DashboardData }) {
           <SheetTrigger asChild>
             <Button>Results{overallEstimate ? ` · CAD ${formatPercent(overallEstimate.probability)}` : ""}</Button>
           </SheetTrigger>
-          <SheetContent side="right" className="w-full gap-0 p-0 sm:max-w-md">
+          <SheetContent side="right" className="w-full gap-0 bg-card p-0 sm:max-w-md">
             <SheetHeader className="sr-only">
               <SheetTitle>Results</SheetTitle>
               <SheetDescription>Prediction, explanation and model performance</SheetDescription>
@@ -219,10 +222,10 @@ function Workspace({ data }: { data: DashboardData }) {
 
 function LoadingShell() {
   return (
-    <div className="grid h-full gap-px lg:grid-cols-[27%_1fr_32%]" aria-busy="true" aria-label="Loading">
-      <Skeleton className="hidden h-full rounded-none lg:block" />
-      <Skeleton className="h-full rounded-none" />
-      <Skeleton className="hidden h-full rounded-none lg:block" />
+    <div className="grid h-full gap-4 p-4 lg:grid-cols-[24%_1fr_28%]" aria-busy="true" aria-label="Loading">
+      <Skeleton className="hidden h-full rounded-xl lg:block" />
+      <Skeleton className="h-full rounded-xl" />
+      <Skeleton className="hidden h-full rounded-xl lg:block" />
     </div>
   );
 }
@@ -236,7 +239,7 @@ export function Dashboard() {
     <div className="flex h-dvh flex-col">
       <AppHeader status={state.status} />
       <DisclaimerStrip text={disclaimer} />
-      <main className="min-h-0 flex-1">
+      <main className="min-h-0 flex-1 bg-page">
         {state.status === "loading" && <LoadingShell />}
         {state.status === "error" && (
           <Empty className="h-full">

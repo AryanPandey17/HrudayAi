@@ -34,6 +34,7 @@
   --color-raise: var(--raise);
   --color-lower: var(--lower);
   --color-canvas: var(--canvas);
+  --color-page: var(--page);
   --color-risk-1: var(--risk-1);
   --color-risk-2: var(--risk-2);
   --color-risk-3: var(--risk-3);
@@ -42,7 +43,8 @@
 }
 
 /*
- * Neutral shadcn/ui tokens with one accent (--primary) for primary actions.
+ * Neutral shadcn/ui tokens; the primary action is the high-contrast neutral (black on light,
+ * white on dark), as in the shadcn/ui reference blocks.
  *
  * Risk scale: one hue, ordered by lightness, so it survives colour-vision deficiency. Each
  * theme has its own steps and "further from the surface" always means higher probability.
@@ -57,7 +59,7 @@
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.45 0.085 224);
+  --primary: oklch(0.205 0 0);
   --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
@@ -68,7 +70,8 @@
   --destructive: oklch(0.577 0.245 27.325);
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
-  --ring: oklch(0.6 0.06 224);
+  --ring: oklch(0.708 0 0);
+  --page: oklch(0.965 0 0);
   --notice: oklch(0.975 0.012 80);
   --notice-foreground: oklch(0.36 0.04 70);
   --notice-border: oklch(0.9 0.03 80);
@@ -80,7 +83,7 @@
   --risk-4: #96501a;
   --risk-5: #6b370f;
   --vessel-idle: #8d9299;
-  --canvas: #f4f4f3;
+  --canvas: #fafafa;
   --heart-wall: #ded8d3;
   --heart-artery: #d9cbc4;
   --heart-vein: #cdd2d8;
@@ -90,12 +93,12 @@
 .dark {
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
-  --card: oklch(0.185 0 0);
+  --card: oklch(0.205 0 0);
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.78 0.09 220);
-  --primary-foreground: oklch(0.18 0.02 224);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
   --secondary: oklch(0.269 0 0);
   --secondary-foreground: oklch(0.985 0 0);
   --muted: oklch(0.269 0 0);
@@ -105,7 +108,8 @@
   --destructive: oklch(0.704 0.191 22.216);
   --border: oklch(1 0 0 / 12%);
   --input: oklch(1 0 0 / 16%);
-  --ring: oklch(0.65 0.07 220);
+  --ring: oklch(0.556 0 0);
+  --page: oklch(0.13 0 0);
   --notice: oklch(0.24 0.015 75);
   --notice-foreground: oklch(0.88 0.04 80);
   --notice-border: oklch(0.36 0.03 75);
@@ -117,7 +121,7 @@
   --risk-4: #e89a60;
   --risk-5: #f6c79c;
   --vessel-idle: #8a8f97;
-  --canvas: #161616;
+  --canvas: #1a1a1a;
   --heart-wall: #6a6460;
   --heart-artery: #776d66;
   --heart-vein: #5f666f;

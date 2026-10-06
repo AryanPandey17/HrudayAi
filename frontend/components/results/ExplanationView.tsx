@@ -15,7 +15,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { formatPercent, formatPoints } from "@/lib/risk";
 import type { Contribution, Feature, FeatureGroup, TargetPrediction } from "@/lib/types";
 
-interface ExplanationTabProps {
+interface ExplanationViewProps {
   selected: string;
   prediction: TargetPrediction | null;
   stageLabel: string;
@@ -70,7 +70,7 @@ function ImpactBar({ impact, scale }: { impact: number; scale: number }) {
 }
 
 /** Why the selected target got its estimate: top SHAP contributions, then every measurement. */
-export function ExplanationTab({ selected, prediction, stageLabel, groups, features, placeholderNames }: ExplanationTabProps) {
+export function ExplanationView({ selected, prediction, stageLabel, groups, features, placeholderNames }: ExplanationViewProps) {
   const [group, setGroup] = useState("all");
   if (!prediction) {
     return (
@@ -127,7 +127,7 @@ export function ExplanationTab({ selected, prediction, stageLabel, groups, featu
           <BarChart data={rows} layout="vertical" margin={{ top: 4, right: 16, bottom: 0, left: 0 }} barCategoryGap={7}>
             <CartesianGrid horizontal={false} />
             <XAxis type="number" domain={domain} tickLine={false} axisLine={false} fontSize={12} tickFormatter={(value: number) => `${value > 0 ? "+" : ""}${value}`} />
-            <YAxis type="category" dataKey="name" width={168} tickLine={false} axisLine={false} fontSize={12} interval={0} />
+            <YAxis type="category" dataKey="name" width={200} tickLine={false} axisLine={false} fontSize={12} interval={0} />
             <ChartTooltip cursor={{ fill: "var(--muted)" }} content={<ContributionTooltip />} />
             <ReferenceLine x={0} stroke="var(--foreground)" />
             <Bar dataKey="points" radius={3} isAnimationActive={false}>

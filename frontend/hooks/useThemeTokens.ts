@@ -19,7 +19,7 @@ const RISK_VARIABLES = ["--risk-1", "--risk-2", "--risk-3", "--risk-4", "--risk-
 const SERVER_TOKENS: ThemeTokens = {
   risk: ["#e0a068", "#d28540", "#bb6a27", "#96501a", "#6b370f"],
   vesselIdle: "#8d9299",
-  canvas: "#f4f4f3",
+  canvas: "#fafafa",
   heartWall: "#ded8d3",
   heartArtery: "#d9cbc4",
   heartVein: "#cdd2d8",

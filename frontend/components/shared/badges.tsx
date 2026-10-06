@@ -1,23 +1,9 @@
-import { Circle, CircleAlert, CircleCheck, CircleDot, TriangleAlert } from "lucide-react";
+import { CircleAlert, CircleCheck, TriangleAlert } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { RELIABILITY_AUC_FLOOR } from "@/lib/config";
-import { bandLabel } from "@/lib/risk";
-import type { RiskBand, StageMetrics, TargetPrediction } from "@/lib/types";
-
-const BAND_ICONS = [Circle, CircleDot, TriangleAlert];
-
-/** Display band with an icon whose shape, not colour, carries the level. */
-export function BandBadge({ bandId, bands }: { bandId: string; bands: RiskBand[] }) {
-  const index = bands.findIndex((band) => band.id === bandId);
-  const Icon = BAND_ICONS[Math.min(Math.max(index, 0), BAND_ICONS.length - 1)];
-  return (
-    <Badge variant="outline">
-      <Icon aria-hidden /> {bandLabel(bandId, bands)} band
-    </Badge>
-  );
-}
+import type { StageMetrics, TargetPrediction } from "@/lib/types";
 
 /** Predicted label from the stage model's tuned threshold. */
 export function PredictedLabelBadge({ prediction }: { prediction: TargetPrediction }) {

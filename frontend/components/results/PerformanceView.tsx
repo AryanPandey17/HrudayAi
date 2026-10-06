@@ -7,7 +7,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { RELIABILITY_AUC_FLOOR } from "@/lib/config";
 import type { LadderResponse, MetricsResponse, StageReport, Target } from "@/lib/types";
 
-interface PerformanceTabProps {
+interface PerformanceViewProps {
   targets: Target[];
   ladder: LadderResponse;
   metrics: MetricsResponse;
@@ -48,7 +48,7 @@ function AucCell({ report }: { report: StageReport }) {
 }
 
 /** Saved validation results (reports/ladder_metrics.json), shown exactly as produced by training. */
-export function PerformanceTab({ targets, ladder, metrics, selected, activeStage }: PerformanceTabProps) {
+export function PerformanceView({ targets, ladder, metrics, selected, activeStage }: PerformanceViewProps) {
   const { n_train, n_test, n_rows } = metrics.metrics.meta;
   const stageReports = (target: string) => ladder.stages.map((stage) => ladder.metrics[target].stages[String(stage.id)]);
   const anyGain = targets.some(({ name }) => stageReports(name).some((r) => r.gain_vs_previous_stage?.distinguishable_from_noise));

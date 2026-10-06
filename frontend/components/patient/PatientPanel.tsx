@@ -1,19 +1,18 @@
 "use client";
 
-import { Check, Minus, RotateCcw, UserRound } from "lucide-react";
+import { Check, ChevronRight, RotateCcw } from "lucide-react";
+import { useState } from "react";
 
-import { stageIcon } from "@/components/shared/stage-icons";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { StageIcon } from "@/components/shared/StageIcon";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
+import { Progress } from "@/components/ui/progress";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Switch } from "@/components/ui/switch";
 import type { FormState, LadderStatus, RungStatus } from "@/lib/form";
 import { formatPercent } from "@/lib/risk";
 import type { ExamplePatient, Feature, LadderResponse, LadderStage, Target } from "@/lib/types";
 
-import { FeatureField } from "./FeatureField";
+import { StepDialog } from "./StepDialog";
 
 interface PatientPanelProps {
   inputs: Map<string, Feature>;
@@ -22,7 +21,7 @@ interface PatientPanelProps {
   examples: ExamplePatient[];
   exampleSource: string;
   activeExampleId: string | null;
-  /** Target whose per-stage validated AUC is shown on each rung. */
+  /** Target whose per-step validated AUC is shown on each step. */
   selectedTarget: string;
   form: FormState;
   status: LadderStatus;
@@ -45,141 +44,128 @@ function actualSummary(example: ExamplePatient, targets: Target[]): string {
   return `${overall ? example.actual[overall.name] : ""}, ${vessels}`;
 }
 
-function rungMessage(rung: RungStatus, earlierUsed: boolean): string {
-  if (rung.notDone) return "Marked as not done";
-  if (rung.invalid) return `${rung.invalid} value${rung.invalid > 1 ? "s" : ""} out of range`;
-  if (!rung.complete) return `${rung.total - rung.filled} of ${rung.total} fields empty`;
-  if (!earlierUsed) return "Complete, but an earlier step is missing";
-  return "In use";
+function rungState(rung: RungStatus, earlierUsed: boolean): { text: string; active: boolean } {
+  if (rung.notDone) return { text: "Not done", active: false };
+  if (rung.invalid) return { text: `${rung.invalid} out of range`, active: false };
+  if (!rung.complete) return { text: `${rung.total - rung.filled} empty`, active: false };
+  if (!earlierUsed) return { text: "Waiting for earlier step", active: false };
+  return { text: "In use", active: true };
 }
 
-function RungMarker({ index, rung }: { index: number; rung: RungStatus }) {
-  const tone = rung.used ? "border-primary bg-primary text-primary-foreground" : "border-border text-muted-foreground";
-  return (
-    <span className={`flex size-6 shrink-0 items-center justify-center rounded-full border text-xs font-medium ${tone}`} aria-hidden>
-      {rung.used ? <Check className="size-3.5" /> : rung.notDone ? <Minus className="size-3.5" /> : index}
-    </span>
-  );
-}
-
-/** Left zone: example patients first, then the four-rung test ladder with its schema-driven fields. */
+/** Left zone: example patients first, then the four ladder steps; each step opens its form in a dialog. */
 export function PatientPanel(props: PatientPanelProps) {
   const { inputs, ladder, form, status, selectedTarget } = props;
+  const [openStage, setOpenStage] = useState<number | null>(null);
+  const opened = ladder.stages.find((stage) => stage.id === openStage) ?? null;
 
   return (
     <section className="flex h-full min-h-0 flex-col" aria-label="Patient and test ladder">
-      <header className="flex shrink-0 items-center justify-between gap-2 border-b py-3 pl-4 pr-12 lg:pr-4">
+      <header className="flex shrink-0 items-start justify-between gap-2 border-b py-4 pl-5 pr-12 lg:pr-5">
         <div>
           <h2 className="text-lg font-semibold tracking-tight">Patient</h2>
-          <p className="text-xs text-muted-foreground">Load an example, then adjust or add tests.</p>
+          <p className="mt-0.5 text-sm text-muted-foreground">Load an example or open a step.</p>
         </div>
-        <Button variant="ghost" size="sm" onClick={props.onReset}>
+        <Button variant="outline" size="sm" onClick={props.onReset}>
           <RotateCcw /> Reset
         </Button>
       </header>
       <ScrollArea className="min-h-0 flex-1 [&_[data-slot=scroll-area-viewport]>div]:!block">
-        <div className="space-y-6 p-4">
+        <div className="space-y-5 p-4">
           <div>
             <h3 className={SECTION_LABEL}>Example patients</h3>
             <div className="mt-2 grid gap-2">
-              {props.examples.map((example) => (
-                <Button
-                  key={example.id}
-                  variant={example.id === props.activeExampleId ? "secondary" : "outline"}
-                  aria-pressed={example.id === props.activeExampleId}
-                  onClick={() => props.onLoadExample(example)}
-                  className="h-auto w-full items-start justify-between gap-3 px-3 py-2 text-left whitespace-normal"
-                >
-                  <span className="flex min-w-0 items-start gap-2">
-                    <UserRound className="mt-0.5" />
+              {props.examples.map((example) => {
+                const active = example.id === props.activeExampleId;
+                return (
+                  <button
+                    key={example.id}
+                    type="button"
+                    aria-pressed={active}
+                    onClick={() => props.onLoadExample(example)}
+                    className={`flex w-full items-center justify-between gap-3 rounded-lg border bg-muted/50 px-4 py-2.5 text-left transition-colors hover:bg-muted ${
+                      active ? "border-foreground" : "border-transparent"
+                    }`}
+                  >
                     <span className="min-w-0">
                       <span className="block text-sm font-medium">{example.label}</span>
-                      <span className="block text-xs font-normal text-muted-foreground">
-                        Test patient {example.dataset_row} · angiography: {actualSummary(example, props.targets)}
+                      <span className="block truncate text-xs text-muted-foreground">
+                        Angiography: {actualSummary(example, props.targets)}
                       </span>
                     </span>
-                  </span>
-                  <span className="shrink-0 font-mono text-xs tabular-nums text-muted-foreground">
-                    CAD {formatPercent(example.predicted_cad_probability)}
-                  </span>
-                </Button>
-              ))}
+                    <span className="shrink-0 font-mono text-sm font-medium tabular-nums">
+                      {formatPercent(example.predicted_cad_probability)}
+                    </span>
+                  </button>
+                );
+              })}
             </div>
-            <p className="mt-2 text-xs text-muted-foreground">{props.exampleSource}.</p>
+            <p className="mt-2 text-xs text-muted-foreground">{props.exampleSource}. Percentages are predicted CAD.</p>
           </div>
 
           <div>
             <h3 className={SECTION_LABEL}>Test ladder</h3>
-            <p className="mt-1 text-xs text-muted-foreground">
-              Steps are cumulative. The estimate uses every step up to the first one that is incomplete or not done.
-            </p>
-            <Accordion type="single" collapsible defaultValue={String(ladder.stages[0].id)} className="mt-2 rounded-lg border">
+            <div className="mt-2 grid gap-2">
               {ladder.stages.map((stage, index) => {
                 const rung = status.rungs[stage.id];
-                const Icon = stageIcon(stage.key);
                 const earlierUsed = index === 0 || status.rungs[ladder.stages[index - 1].id].used;
+                const state = rungState(rung, earlierUsed);
                 const auc = ladder.metrics[selectedTarget]?.stages[String(stage.id)]?.cv.roc_auc;
-                const fields = stage.added_features.map((name) => inputs.get(name)!);
-                const switchId = `not-done-${stage.id}`;
                 return (
-                  <AccordionItem key={stage.id} value={String(stage.id)} className="px-3">
-                    <AccordionTrigger className="items-center py-3 hover:no-underline">
-                      <span className="flex min-w-0 flex-1 items-center gap-3">
-                        <RungMarker index={index + 1} rung={rung} />
-                        <span className="min-w-0 flex-1">
-                          <span className="flex items-center gap-1.5 text-sm font-medium">
-                            <Icon className="size-4 text-muted-foreground" aria-hidden />
-                            {stage.label}
-                          </span>
-                          <span className="block text-xs font-normal text-muted-foreground">{rungMessage(rung, earlierUsed)}</span>
-                        </span>
-                        <span className="flex shrink-0 flex-col items-end gap-1">
-                          <span className="font-mono text-xs tabular-nums text-muted-foreground">
-                            {rung.filled}/{rung.total}
-                          </span>
-                          {auc && (
-                            <Badge variant="outline" className="font-mono tabular-nums">
-                              {selectedTarget} AUC {auc.mean.toFixed(2)}
-                            </Badge>
-                          )}
+                  <button
+                    key={stage.id}
+                    type="button"
+                    onClick={() => setOpenStage(stage.id)}
+                    aria-label={`Edit step ${index + 1}: ${stage.label}`}
+                    className="w-full rounded-lg bg-muted/50 px-4 py-2.5 text-left transition-colors hover:bg-muted"
+                  >
+                    <span className="flex items-center justify-between gap-2">
+                      <span className="flex min-w-0 items-center gap-2 text-sm font-medium">
+                        <StageIcon stageKey={stage.key} className="size-4 shrink-0 text-muted-foreground" />
+                        <span className="truncate">
+                          {index + 1}. {stage.label}
                         </span>
                       </span>
-                    </AccordionTrigger>
-                    <AccordionContent className="space-y-3 pb-4">
-                      {index > 0 && (
-                        <div className="flex items-center justify-between gap-3 rounded-md bg-muted px-3 py-2">
-                          <Label htmlFor={switchId} className="text-[13px] font-normal">
-                            Test not done. Stop the ladder before this step.
-                          </Label>
-                          <Switch
-                            id={switchId}
-                            checked={rung.notDone}
-                            onCheckedChange={(checked) => props.onToggleNotDone(stage.id, checked)}
-                          />
-                        </div>
+                      <span className="flex shrink-0 items-center gap-1">
+                        <Badge variant={state.active ? "secondary" : "outline"} className={state.active ? "bg-background" : undefined}>
+                          {state.active && <Check aria-hidden />}
+                          {state.text}
+                        </Badge>
+                        <ChevronRight className="size-4 text-muted-foreground" aria-hidden />
+                      </span>
+                    </span>
+                    <Progress value={(rung.filled / rung.total) * 100} className="mt-2.5 h-1" />
+                    <span className="mt-2 flex justify-between text-xs text-muted-foreground">
+                      <span className="font-mono tabular-nums">
+                        {rung.filled}/{rung.total} fields
+                      </span>
+                      {auc && (
+                        <span className="font-mono tabular-nums">
+                          {selectedTarget} AUC {auc.mean.toFixed(2)}
+                        </span>
                       )}
-                      <div className="grid grid-cols-2 gap-x-3 gap-y-3">
-                        {fields.map((feature) => (
-                          <FeatureField key={feature.name} feature={feature} field={form[feature.name]} onChange={props.onChange} />
-                        ))}
-                      </div>
-                      {rung.filled < rung.total && (
-                        <Button variant="ghost" size="sm" onClick={() => props.onFillPlaceholders(stage)}>
-                          Fill {rung.total - rung.filled} empty with typical placeholder values
-                        </Button>
-                      )}
-                    </AccordionContent>
-                  </AccordionItem>
+                    </span>
+                  </button>
                 );
               })}
-            </Accordion>
+            </div>
             <p className="mt-2 text-xs text-muted-foreground">
-              AUC on each step is the cross-validated ROC-AUC of that step&apos;s {selectedTarget} model. BMI and obesity are
-              computed from weight and height.
+              Steps are cumulative: the estimate uses every step up to the first one that is incomplete or not done. AUC is
+              the cross-validated ROC-AUC of that step&apos;s {selectedTarget} model.
             </p>
           </div>
         </div>
       </ScrollArea>
+      <StepDialog
+        stage={opened}
+        skippable={opened !== null && opened.id !== ladder.stages[0].id}
+        rung={opened ? status.rungs[opened.id] : null}
+        fields={opened ? opened.added_features.map((name) => inputs.get(name)!) : []}
+        form={form}
+        onClose={() => setOpenStage(null)}
+        onChange={props.onChange}
+        onToggleNotDone={props.onToggleNotDone}
+        onFillPlaceholders={props.onFillPlaceholders}
+      />
     </section>
   );
 }
